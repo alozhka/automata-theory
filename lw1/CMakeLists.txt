@@ -1,12 +1,14 @@
 cmake_minimum_required(VERSION 3.20)
-project(lw1)
+project(.)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_library(ExampleLib
-    lw1/src/ExampleLib/FileUtil.cpp
-    lw1/src/ExampleLib/FileUtil.h
+        src/ExampleLib/FileUtil.cpp
+        src/ExampleLib/FileUtil.h
+        src/ExampleLib/TextUtil.cpp
+        src/ExampleLib/TextUtil.h
 )
 
 target_include_directories(ExampleLib PUBLIC src/ExampleLib)
@@ -23,7 +25,7 @@ set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
 add_executable(tests
-    lw1/tests/test_main.cpp
+        tests/test_main.cpp
 )
 
 target_link_libraries(tests

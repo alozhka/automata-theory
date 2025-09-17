@@ -2,6 +2,7 @@
 #include <fstream>
 #include <sstream>
 #include "../src/ExampleLib/FileUtil.h"
+#include "../src/ExampleLib/TextUtil.h"
 
 class FileUtilTest : public ::testing::Test {
 protected:
@@ -56,4 +57,34 @@ TEST_F(FileUtilTest, AddLineNumbers_EmptyFile) {
     resultFile.close();
 
     EXPECT_TRUE(content.empty());
+}
+
+TEST(TextUtilTest, ParseRoman_ValidParse)
+{
+    EXPECT_EQ(TextUtil::ParseRoman("VII"), 7);
+}
+
+TEST(TextUtilTest, ParseRoman_InvalidNumber_NotRimsk)
+{
+    EXPECT_THROW(TextUtil::ParseRoman("-"), std::runtime_error);
+}
+
+TEST(TextUtilTest, ParseRoman_InvalidNumber_EmptyString)
+{
+    EXPECT_THROW(TextUtil::ParseRoman(""), std::runtime_error);
+}
+
+TEST(TextUtilTest, ParseRoman_InvalidNumber_Bigger3000)
+{
+    EXPECT_THROW(TextUtil::ParseRoman("MMMI"), std::runtime_error);
+}
+
+TEST(TextUtilTest, ParseRoman_VvalidNumber_Equal3000)
+{
+    EXPECT_EQ(TextUtil::ParseRoman("MMM"), 3000);
+}
+
+TEST(TextUtilTest, ParseRoman_VvalidNumber_Equal1)
+{
+    EXPECT_EQ(TextUtil::ParseRoman("I"), 1);
 }
