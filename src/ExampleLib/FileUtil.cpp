@@ -13,16 +13,17 @@ void FileUtil::AddLineNumbers(const std::string& path)
     std::vector<std::string> lines;
     std::string line;
     while (std::getline(inputFile, line)) {
-        if (inputFile.fail() && !inputFile.eof()) {
-            throw std::runtime_error("Error read line");
-        }
         lines.push_back(line);
     }
+    if (inputFile.bad()) {
+        throw std::runtime_error("Error reading file");
+    }
+    inputFile.close();
 
     std::ofstream outputFile(path, std::ios::trunc);
     for (int i = 1; i <= lines.size(); i++)
     {
-        outputFile << i << " " << lines[i - 1] << std::endl;
+        outputFile << i << ". " << lines[i - 1] << std::endl;
     }
     outputFile.close();
 }
