@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <fstream>
 #include <sstream>
-#include "FileUtil.h"
+#include "../src/ExampleLib/FileUtil.h"
 
 class FileUtilTest : public ::testing::Test {
 protected:
@@ -29,13 +29,13 @@ TEST_F(FileUtilTest, AddLineNumbers_ValidFile) {
     std::string line;
 
     std::getline(resultFile, line);
-    EXPECT_EQ(line, "1 first line");
+    EXPECT_EQ(line, "1. first line");
 
     std::getline(resultFile, line);
-    EXPECT_EQ(line, "2 second line");
+    EXPECT_EQ(line, "2. second line");
 
     std::getline(resultFile, line);
-    EXPECT_EQ(line, "3 third line");
+    EXPECT_EQ(line, "3. third line");
 
     resultFile.close();
 }
