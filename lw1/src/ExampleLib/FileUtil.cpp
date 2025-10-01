@@ -23,7 +23,7 @@ void FileUtil::AddLineNumbers(const std::string& path)
     std::ofstream outputFile(path, std::ios::trunc);
     for (int i = 1; i <= lines.size(); i++)
     {
-        outputFile << i << ". " << lines[i - 1] << std::endl;
+        outputFile << i << ". " << lines[i - 1] << '\n';
     }
     outputFile.close();
 }
