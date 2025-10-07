@@ -1,61 +1,18 @@
 Checks: >
-  -*,
   bugprone-*,
   clang-analyzer-*,
+  -clang-analyzer-cplusplus*,
+  -clang-analyzer-optin*,
   performance-*,
   portability-*,
-  readability-*,
-  modernize-*,
-  cppcoreguidelines-*,
-  -bugprone-branch-clone,
-  -bugprone-easily-swappable-parameters,
-  -bugprone-exception-escape,
-  -bugprone-implicit-widening-of-multiplication-result,
-  -bugprone-macro-parentheses,
-  -bugprone-misplaced-widening-cast,
-  -bugprone-narrowing-conversions,
-  -bugprone-sizeof-expression,
-  -bugprone-suspicious-include,
-  -bugprone-suspicious-memset-usage,
-  -bugprone-too-small-loop-variable,
-  -bugprone-undefined-memory-manipulation,
-  -clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling,
-  -cppcoreguidelines-avoid-c-arrays,
-  -cppcoreguidelines-avoid-magic-numbers,
-  -cppcoreguidelines-macro-usage,
-  -cppcoreguidelines-non-private-member-variables-in-classes,
-  -cppcoreguidelines-pro-bounds-array-to-pointer-decay,
-  -cppcoreguidelines-pro-bounds-constant-array-index,
-  -cppcoreguidelines-pro-bounds-pointer-arithmetic,
-  -cppcoreguidelines-pro-type-union-access,
-  -cppcoreguidelines-pro-type-vararg,
-  -modernize-avoid-c-arrays,
-  -modernize-use-trailing-return-type,
-  -performance-no-int-to-ptr,
-  -readability-identifier-length,
-  -readability-implicit-bool-conversion,
   -readability-magic-numbers,
-  -readability-named-parameter
+  -readability-identifier-length
 
 WarningsAsErrors: ''
 HeaderFilterRegex: '.*'
 FormatStyle: file
 CheckOptions:
-  - key: performance-inefficient-vector-operation
-    value: '0'
-  - key: modernize-use-nodiscard
-    value: '0'
   - key: readability-function-cognitive-complexity
     value: '50'
   - key: readability-function-size
     value: '100'
-  - key: readability-identifier-naming.ClassCase
-    value: CamelCase
-  - key: readability-identifier-naming.StructCase
-    value: CamelCase
-  - key: readability-identifier-naming.VariableCase
-    value: camelBack
-  - key: readability-identifier-naming.MemberCase
-    value: camelBack
-  - key: readability-identifier-naming.ConstantCase
-    value: UPPER_CASE

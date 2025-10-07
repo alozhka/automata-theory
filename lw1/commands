@@ -1,0 +1,2 @@
+cmake ..
+./Debug/tests.exe
