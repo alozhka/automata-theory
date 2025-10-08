@@ -4,5 +4,5 @@
 
 class TextUtil {
 public:
-    static int ParseRoman(const std::string& text);
+    static std::string FormatRoman(int value);
 };

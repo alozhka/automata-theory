@@ -84,55 +84,69 @@ TEST_F(FileUtilTest, AddLineNumbers_SingleLine) {
     AssertFileContent(testFileName, {"1. single line"});
 }
 
-class TextUtilParameterizedTest : public ::testing::TestWithParam<std::pair<std::string, int>> {
+class FormatRomanParameterizedTest : public ::testing::TestWithParam<std::pair<int, std::string>> {
 };
 
-TEST_P(TextUtilParameterizedTest, ParseRoman_ValidNumbers) {
-    const auto& [roman, expected] = GetParam();
-    EXPECT_EQ(TextUtil::ParseRoman(roman), expected);
+TEST_P(FormatRomanParameterizedTest, FormatRoman_ValidNumbers) {
+    const auto& [value, expected] = GetParam();
+    EXPECT_EQ(TextUtil::FormatRoman(value), expected);
 }
 
 INSTANTIATE_TEST_SUITE_P(
-        ValidRomanNumerals,
-        TextUtilParameterizedTest,
+        FormatRomanValidValues,
+        FormatRomanParameterizedTest,
         ::testing::Values(
-                std::make_pair("I", 1),
-                std::make_pair("V", 5),
-                std::make_pair("X", 10),
-                std::make_pair("L", 50),
-                std::make_pair("C", 100),
-                std::make_pair("D", 500),
-                std::make_pair("M", 1000),
-                std::make_pair("IV", 4),
-                std::make_pair("IX", 9),
-                std::make_pair("XL", 40),
-                std::make_pair("XC", 90),
-                std::make_pair("CD", 400),
-                std::make_pair("CM", 900),
-                std::make_pair("MMM", 3000)
+                std::make_pair(1, "I"),
+                std::make_pair(4, "IV"),
+                std::make_pair(5, "V"),
+                std::make_pair(7, "VII"),
+                std::make_pair(9, "IX"),
+                std::make_pair(10, "X"),
+                std::make_pair(14, "XIV"),
+                std::make_pair(19, "XIX"),
+                std::make_pair(40, "XL"),
+                std::make_pair(44, "XLIV"),
+                std::make_pair(49, "XLIX"),
+                std::make_pair(50, "L"),
+                std::make_pair(90, "XC"),
+                std::make_pair(99, "XCIX"),
+                std::make_pair(100, "C"),
+                std::make_pair(400, "CD"),
+                std::make_pair(444, "CDXLIV"),
+                std::make_pair(500, "D"),
+                std::make_pair(900, "CM"),
+                std::make_pair(999, "CMXCIX"),
+                std::make_pair(1000, "M"),
+                std::make_pair(1984, "MCMLXXXIV"),
+                std::make_pair(2000, "MM"),
+                std::make_pair(2023, "MMXXIII"),
+                std::make_pair(2025, "MMXXV"),
+                std::make_pair(3000, "MMM")
         )
 );
 
-class TextUtilInvalidTest : public ::testing::TestWithParam<std::string> {
+class FormatRomanInvalidTest : public ::testing::TestWithParam<int> {
 };
 
-TEST_P(TextUtilInvalidTest, ParseRoman_InvalidNumbers) {
-    EXPECT_THROW(TextUtil::ParseRoman(GetParam()), std::runtime_error);
+TEST_P(FormatRomanInvalidTest, FormatRoman_InvalidNumbers) {
+    EXPECT_THROW(TextUtil::FormatRoman(GetParam()), std::runtime_error);
 }
 
 INSTANTIATE_TEST_SUITE_P(
-        InvalidRomanNumerals,
-        TextUtilInvalidTest,
-        ::testing::Values(
-                "",
-                "-",
-                "MMMI",
-                "ABC"
-        )
+        FormatRomanInvalidValues,
+        FormatRomanInvalidTest,
+        ::testing::Values(-1, -100, 3001, 4000)
 );
 
-TEST(TextUtilTest, ParseRoman_BoundaryValues) {
-    EXPECT_EQ(TextUtil::ParseRoman("I"), 1);
-    EXPECT_EQ(TextUtil::ParseRoman("MMM"), 3000);
-    EXPECT_THROW(TextUtil::ParseRoman("MMMI"), std::runtime_error);
+TEST(TextUtilTest, FormatRoman_BoundaryValues) {
+    EXPECT_EQ(TextUtil::FormatRoman(0), "");
+    EXPECT_EQ(TextUtil::FormatRoman(1), "I");
+    EXPECT_EQ(TextUtil::FormatRoman(3000), "MMM");
+    EXPECT_THROW(TextUtil::FormatRoman(3001), std::runtime_error);
+    EXPECT_THROW(TextUtil::FormatRoman(-1), std::runtime_error);
+}
+
+TEST(TextUtilTest, FormatRoman_SpecificExamples) {
+    EXPECT_EQ(TextUtil::FormatRoman(7), "VII");
+    EXPECT_EQ(TextUtil::FormatRoman(2025), "MMXXV");
 }

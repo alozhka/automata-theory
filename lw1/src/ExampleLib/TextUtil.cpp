@@ -1,42 +1,44 @@
 #include "TextUtil.h"
 
 #include <map>
-#include <istream>
+#include <stdexcept>
+#include <vector>
 
-int TextUtil::ParseRoman(const std::string &text)
+std::string TextUtil::FormatRoman(int value)
 {
-    if (text.empty()) {
-        throw std::runtime_error("Empty string");
+    if (value < 0 || value > 3000) {
+        throw std::runtime_error("Number must be from 0 to 3000");
     }
 
-    std::map<char, int> roman = {
-            {'M', 1000}, {'D', 500}, {'C', 100},
-            {'L', 50}, {'X', 10}, {'V', 5}, {'I', 1}
+    if (value == 0) {
+        return "";
+    }
+
+    std::vector<std::pair<int, std::string>> values = {
+            {1000, "M"},
+            {900, "CM"},
+            {500, "D"},
+            {400, "CD"},
+            {100, "C"},
+            {90, "XC"},
+            {50, "L"},
+            {40, "XL"},
+            {10, "X"},
+            {9, "IX"},
+            {5, "V"},
+            {4, "IV"},
+            {1, "I"}
     };
 
-    for (char c : text) {
-        if (roman.find(c) == roman.end()) {
-            throw std::runtime_error("Undefined symbol: " + std::string(1, c));
+    std::string result;
+    int remaining = value;
+
+    for (const auto& [num, roman] : values) {
+        while (remaining >= num) {
+            result += roman;
+            remaining -= num;
         }
     }
 
-    int res = 0;
-    for (size_t i = 0; i < text.size() - 1; ++i) {
-        int current = roman[text[i]];
-        int next = roman[text[i + 1]];
-
-        if (current < next) {
-            res -= current;
-        } else {
-            res += current;
-        }
-    }
-
-    res += roman[text[text.size() - 1]];
-
-    if (res <= 0 || res > 3000) {
-        throw std::runtime_error("Number must be from 1 to 3000");
-    }
-
-    return res;
+    return result;
 }
