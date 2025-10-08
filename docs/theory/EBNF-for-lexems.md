@@ -51,7 +51,7 @@ sign = "+" | "-";
 
 string_literal = ('"' | "L"), s_char, {Rs_char}, '"';
 s_char = supported_char | escape_sequence;
-supported_char = ANY_CHAR - "\"" - "\\";
+supported_char = ANY_CHAR - "\"" - "\\" - NEWLINE;
 
 escape_sequence = simple_escape_sequence | octal_ecsape_sequence | hex_escape_sequence;
 simple_escape_sequence = "\'" | '\"' | "\?" | "\\" | "\a" | "\b" | "\f" | "\n" | "\r" | "\t" | "\v";
