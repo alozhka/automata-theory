@@ -1,2 +1,6 @@
 .idea/
 cmake-build-debug/
+
+docs/competitors/c++/task1-CircleSquare/build
+docs/competitors/c++/task2-GCD/build
+docs/competitors/c++/task3-Reverse/build
