@@ -1,5 +1,5 @@
-#include <iostream>
-#include <cmath>
+#include <iostream> //почему с #
+#include <cmath> // к чему отностится include
 
 float GetAreaCircleByRadius(float radius) 
 {
