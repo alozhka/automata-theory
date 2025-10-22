@@ -2,133 +2,254 @@ namespace SqlLexer;
 
 public enum TokenType
 {
-    /// <summary>
-    ///  Ключевое слово SELECT.
-    /// </summary>
-    Select,
 
     /// <summary>
-    ///  Ключевое слово FROM.
+    ///  Ключевое слово dayzint.
     /// </summary>
-    From,
+    Dayzint,
 
-    /// <summary>
-    ///  Ключевое слово WHERE.
-    /// </summary>
-    Where,
+	/// <summary>
+	///  Ключевое слово fallout.
+	/// </summary>
+	Fallout,
 
-    /// <summary>
-    ///  Ключевое слово AS.
-    /// </summary>
-    As,
+	/// <summary>
+	///  Ключевое слово statum.
+	/// </summary>
+	Statum,
 
-    /// <summary>
-    ///  Ключевое слово AND.
-    /// </summary>
-    And,
+	/// <summary>
+	///  Ключевое слово ready.
+	/// </summary>
+	Ready,
 
-    /// <summary>
-    ///  Ключевое слово OR.
-    /// </summary>
-    Or,
+	/// <summary>
+	///  Ключевое слово noready.
+	/// </summary>
+	Noready,
 
-    /// <summary>
-    ///  Ключевое слово NOT.
-    /// </summary>
-    Not,
+	/// <summary>
+	///  Ключевое слово strike.
+	/// </summary>
+	Strike,
 
-    /// <summary>
-    ///  Идентификатор (имя символа).
-    /// </summary>
-    Identifier,
+	/// <summary>
+	///  Ключевое слово araya.
+	/// </summary>
+	Araya,
 
-    /// <summary>
-    ///  Литерал числа.
-    /// </summary>
-    NumericLiteral,
+	/// <summary>
+	///  Ключевое слово raid.
+	/// </summary>
+	Raid,
 
-    /// <summary>
-    ///  Литерал строки.
-    /// </summary>
-    StringLiteral,
+	/// <summary>
+	///  Ключевое слово exodus.
+	/// </summary>
+	Exodus,
 
-    /// <summary>
-    ///  Оператор сложения.
-    /// </summary>
-    PlusSign,
+	/// <summary>
+	///  Ключевое слово ghost.
+	/// </summary>
+	Ghost,
 
-    /// <summary>
-    ///  Оператор вычитания.
-    /// </summary>
-    MinusSign,
+	/// <summary>
+	///  Ключевое слово exodusln.
+	/// </summary>
+	Exodusln,
 
-    /// <summary>
-    ///  Оператор умножения.
-    /// </summary>
-    MultiplySign,
+	/// <summary>
+	///  Ключевое слово iffy.
+	/// </summary>
+	Iffy,
 
-    /// <summary>
-    ///  Оператор деления.
-    /// </summary>
-    DivideSign,
+	/// <summary>
+	///  Ключевое слово elysian.
+	/// </summary>
+	Elysian,
 
-    /// <summary>
-    ///  Оператор деления по модулю.
-    /// </summary>
-    ModuloSign,
+	/// <summary>
+	///  Ключевое слово elysiffy.
+	/// </summary>
+	Elysiffy,
 
-    /// <summary>
-    ///  Оператор возведения в степень.
-    /// </summary>
-    ExponentiationSign,
+	/// <summary>
+	///  Ключевое слово valorant.
+	/// </summary>
+	Valorant,
 
-    /// <summary>
-    ///  Оператор сравнения "меньше".
-    /// </summary>
-    LessThan,
+	/// <summary>
+	///  Ключевое слово forza.
+	/// </summary>
+	Forza,
 
-    /// <summary>
-    ///  Оператор сравнения "меньше или равно".
-    /// </summary>
-    LessThanOrEqual,
+	/// <summary>
+	///  Ключевое слово breakout.
+	/// </summary>
+	Breakout,
 
-    /// <summary>
-    ///  Оператор сравнения "больше".
-    /// </summary>
-    GreaterThan,
+	/// <summary>
+	///  Ключевое слово contra.
+	/// </summary>
+	Contra,
 
-    /// <summary>
-    ///  Оператор сравнения "больше или равно".
-    /// </summary>
-    GreaterThanOrEqual,
+	/// <summary>
+	///  Ключевое слово funkotron.
+	/// </summary>
+	Funkotron,
 
-    /// <summary>
-    ///  Открывающая круглая скобка '('.
-    /// </summary>
-    OpenParenthesis,
+	/// <summary>
+	///  Ключевое слово returnal.
+	/// </summary>
+	Returnal,
 
-    /// <summary>
-    ///  Закрывающая круглая скобка ')'.
-    /// </summary>
-    CloseParenthesis,
+	/// <summary>
+	///  Ключевое слово ?.
+	/// </summary>
+	Nullable,
 
-    /// <summary>
-    ///  Запятая ','
-    /// </summary>
-    Comma,
+	/// <summary>
+	///  Идентификатор (имя символа).
+	/// </summary>
+	Identifier,
 
-    /// <summary>
-    ///  Разделитель ';'
-    /// </summary>
-    Semicolon,
+	/// <summary>
+	///  Литерал числа.
+	/// </summary>
+	NumericLiteral,
 
-    /// <summary>
-    ///  Конец файла.
-    /// </summary>
-    EndOfFile,
+	/// <summary>
+	///  Литерал строки.
+	/// </summary>
+	StringLiteral,
 
-    /// <summary>
-    ///  Недопустимая лексема.
-    /// </summary>
-    Error,
+	/// <summary>
+	///  Литерал функции.
+	/// </summary>
+	FuncotronLiteral,
+
+	/// <summary>
+	///  Оператор сложения.
+	/// </summary>
+	PlusSign,
+
+	/// <summary>
+	///  Оператор присваивания.
+	/// </summary>
+	Assign,
+
+	/// <summary>
+	///  Оператор равенства.
+	/// </summary>
+	Equal,
+
+	/// <summary>
+	///  Оператор нерваенства.
+	/// </summary>
+	Unequal,
+
+	/// <summary>
+	///  Оператор вычитания.
+	/// </summary>
+	MinusSign,
+
+	/// <summary>
+	///  Логическое И.
+	/// </summary>
+	LogicalAnd,
+
+	/// <summary>
+	///  Логическое ИЛИ.
+	/// </summary>
+	LogicalOr,
+
+	/// <summary>
+	///  Логическое НЕ.
+	/// </summary>
+	LogicalNot,
+
+	/// <summary>
+	///  Оператор умножения.
+	/// </summary>
+	MultiplySign,
+
+	/// <summary>
+	///  Оператор деления.
+	/// </summary>
+	DivideSign,
+
+	/// <summary>
+	///  Оператор деления по модулю.
+	/// </summary>
+	ModuloSign,
+
+	/// <summary>
+	///  Оператор возведения в степень.
+	/// </summary>
+	ExponentiationSign,
+
+	/// <summary>
+	///  Оператор сравнения "меньше".
+	/// </summary>
+	LessThan,
+
+	/// <summary>
+	///  Оператор сравнения "меньше или равно".
+	/// </summary>
+	LessThanOrEqual,
+
+	/// <summary>
+	///  Оператор сравнения "больше".
+	/// </summary>
+	GreaterThan,
+
+	/// <summary>
+	///  Оператор сравнения "больше или равно".
+	/// </summary>
+	GreaterThanOrEqual,
+
+	/// <summary>
+	///  Открывающая круглая скобка '('.
+	/// </summary>
+	OpenParenthesis,
+
+	/// <summary>
+	///  Закрывающая круглая скобка ')'.
+	/// </summary>
+	CloseParenthesis,
+
+	/// <summary>
+	///  Открывающая фигурная скобка '{'.
+	/// </summary>
+	OpenBrace,
+
+	/// <summary>
+	///  Закрывающая фигурная скобка '}'.
+	/// </summary>
+	CloseBrace,
+
+	/// <summary>
+	///  Запятая ','
+	/// </summary>
+	Comma,
+
+	/// <summary>
+	///  Разделитель ';'
+	/// </summary>
+	Semicolon,
+
+	/// <summary>
+	///  Разделитель ':'
+	/// </summary>
+	Colon,
+
+	/// <summary>
+	///  Конец файла.
+	/// </summary>
+	EndOfFile,
+
+	/// <summary>
+	///  Недопустимая лексема.
+	/// </summary>
+	Error,
 }
