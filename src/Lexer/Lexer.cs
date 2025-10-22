@@ -109,7 +109,10 @@ public class Lexer
             case '^':
                 _scanner.Advance();
                 return new Token(TokenType.ExponentiationSign);
-            case '<':
+			case '!':
+				_scanner.Advance();
+				return new Token(TokenType.LogicalNot);
+			case '<':
                 _scanner.Advance();
                 if (_scanner.Peek() == '=')
                 {
@@ -127,7 +130,27 @@ public class Lexer
                 }
 
                 return new Token(TokenType.GreaterThan);
-            case '(':
+			case '|':
+				_scanner.Advance();
+				if (_scanner.Peek() == '|')
+				{
+					_scanner.Advance();
+					return new Token(TokenType.LogicalOr);
+				}
+
+				_scanner.Advance();
+				return new Token(TokenType.Error, new TokenValue(c.ToString()));
+			case '&':
+				_scanner.Advance();
+				if (_scanner.Peek() == '&')
+				{
+					_scanner.Advance();
+					return new Token(TokenType.LogicalAnd);
+				}
+
+				_scanner.Advance();
+				return new Token(TokenType.Error, new TokenValue(c.ToString()));
+			case '(':
                 _scanner.Advance();
                 return new Token(TokenType.OpenParenthesis);
             case ')':
@@ -164,13 +187,11 @@ public class Lexer
             _scanner.Advance();
         }
 
-        // Проверяем на совпадение с ключевым словом.
         if (Keywords.TryGetValue(value.ToUpper(CultureInfo.InvariantCulture), out TokenType type))
         {
             return new Token(type);
         }
 
-        // Возвращаем токен идентификатора.
         return new Token(TokenType.Identifier, new TokenValue(value));
     }
 
@@ -185,14 +206,12 @@ public class Lexer
         decimal value = GetDigitValue(_scanner.Peek());
         _scanner.Advance();
 
-        // Читаем целую часть числа.
         for (char c = _scanner.Peek(); char.IsAsciiDigit(c); c = _scanner.Peek())
         {
             value = value * 10 + GetDigitValue(c);
             _scanner.Advance();
         }
 
-        // Читаем дробную часть числа.
         if (_scanner.Peek() == '.')
         {
             _scanner.Advance();
@@ -207,7 +226,6 @@ public class Lexer
 
         return new Token(TokenType.NumericLiteral, new TokenValue(value));
 
-        // Локальная функция для получения числа из символа цифры.
         int GetDigitValue(char c)
         {
             return c - '0';
