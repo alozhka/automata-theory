@@ -3,7 +3,7 @@
 namespace SqlLexer;
 
 /// <summary>
-///  Лексический анализатор SQL. Поддерживает подмножество SQL, необходимое этому проекту.
+///  Лексический анализатор строки. Поддерживает подмножество строки, необходимое этому проекту.
 /// </summary>
 public class Lexer
 {
@@ -168,14 +168,6 @@ public class Lexer
         return new Token(TokenType.Error, new TokenValue(c.ToString()));
     }
 
-    /// <summary>
-    ///  Распознаёт идентификаторы и ключевые слова.
-    ///  Идентификаторы обрабатываются по правилам:
-    ///     identifier = [letter | '_' ], { letter | digit | '_' } ;
-    ///     letter = "a" | "b" | .. | "z" | unicode_letter ;
-    ///     digit = "0" | "1" | .. | "9" ;
-    ///     unicode_letter — любая буква Unicode.
-    /// </summary>
     private Token ParseIdentifierOrKeyword()
     {
         string value = _scanner.Peek().ToString();
@@ -195,12 +187,6 @@ public class Lexer
         return new Token(TokenType.Identifier, new TokenValue(value));
     }
 
-    /// <summary>
-    ///  Распознаёт литерал числа по правилам:
-    ///     number = digits_sequence, [ ".", digits_sequence ] ;
-    ///     digits_sequence = digit { digit } ;
-    ///     digit = "0" | "1" | ... | "9" ;
-    /// </summary>
     private Token ParseNumericLiteral()
     {
         decimal value = GetDigitValue(_scanner.Peek());
@@ -232,13 +218,6 @@ public class Lexer
         }
     }
 
-	/// <summary>
-	///  Распознаёт литерал строки по правилам:
-	///     string = quote, { string_element }, quote ;
-	///     quote = "'" | "\"" ;
-	///     string_element = char | escape_sequence ;
-	///     char = ^quote ;
-	/// </summary>
 	private Token ParseStringLiteral()
 	{
 		char quoteChar = _scanner.Peek();
@@ -268,11 +247,6 @@ public class Lexer
 		return new Token(TokenType.StringLiteral, new TokenValue(contents));
 	}
 
-	/// <summary>
-	///  Распознаёт escape-последовательности по правилам:
-	///     escape_sequence = "\", "\" | "\", "'" | "\", "\"" ;
-	///  Возвращает null при появлении неизвестных escape-последовательностей.
-	/// </summary>
 	private bool TryParseStringLiteralEscapeSequence(out char unescaped)
 	{
 		if (_scanner.Peek() == '\\')
@@ -309,9 +283,6 @@ public class Lexer
 		return false;
 	}
 
-	/// <summary>
-	///  Пропускает пробельные символы и комментарии, пока не встретит что-либо иное.
-	/// </summary>
 	private void SkipWhiteSpacesAndComments()
     {
         do
@@ -321,9 +292,6 @@ public class Lexer
         while (TryParseMultilineComment() || TryParseSingleLineComment());
     }
 
-    // <summary>
-    //  Пропускает пробельные символы, пока не встретит иной символ.
-    // </summary>
     private void SkipWhiteSpaces()
     {
         while (char.IsWhiteSpace(_scanner.Peek()))
@@ -332,10 +300,6 @@ public class Lexer
         }
     }
 
-    /// <summary>
-    ///  Пропускает многострочный комментарий в виде `/* ...текст */`,
-    ///  пока не встретит `*/`.
-    /// </summary>
     private bool TryParseMultilineComment()
     {
         if (_scanner.Peek() == '/' && _scanner.Peek(1) == '*')
@@ -354,10 +318,6 @@ public class Lexer
         return false;
     }
 
-    /// <summary>
-    ///  Пропускает однострочный комментарий в виде `-- ...текст`,
-    ///  пока не встретит конец строки (его оставляет).
-    /// </summary>
     private bool TryParseSingleLineComment()
     {
         if (_scanner.Peek() == '-' && _scanner.Peek(1) == '-')
