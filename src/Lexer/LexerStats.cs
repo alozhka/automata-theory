@@ -20,12 +20,12 @@ public static class LexicalStats
 	{
 		var categories = new Dictionary<string, int>
 		{
-			["keywords"] = 0,
-			["identifier"] = 0,
-			["number literals"] = 0,
-			["string literals"] = 0,
-			["operators"] = 0,
-			["other lexemes"] = 0
+			[Categories.Keywords] = 0,
+			[Categories.Identifier] = 0,
+			[Categories.NumberLiterals] = 0,
+			[Categories.StringLiterals] = 0,
+			[Categories.Operators] = 0,
+			[Categories.OtherLexemes] = 0
 		};
 
 		Lexer lexer = new(sourceCode);
@@ -61,22 +61,22 @@ public static class LexicalStats
 			TokenType.Forza or TokenType.Breakout or TokenType.Contra or
 			TokenType.Funkotron or TokenType.Returnal or TokenType.Raid or
 			TokenType.Exodus or TokenType.Exodusln
-				=> "keywords",
+				=> Categories.Keywords,
 
-			TokenType.Identifier => "identifier",
+			TokenType.Identifier => Categories.Identifier,
 
-			TokenType.NumericLiteral => "number literals",
+			TokenType.NumericLiteral => Categories.NumberLiterals,
 
-			TokenType.StringLiteral => "string literals",
+			TokenType.StringLiteral => Categories.StringLiterals,
 
 			TokenType.PlusSign or TokenType.MinusSign or TokenType.MultiplySign or
 			TokenType.DivideSign or TokenType.ModuloSign or TokenType.ExponentiationSign or
 			TokenType.Assign or TokenType.Equal or TokenType.LessThan or
 			TokenType.GreaterThan or TokenType.LessThanOrEqual or TokenType.GreaterThanOrEqual or 
 			TokenType.LogicalAnd or TokenType.LogicalOr or TokenType.LogicalNot
-				=> "operators",
+				=> Categories.Operators,
 
-			_ => "other lexemes"
+			_ => Categories.OtherLexemes
 		};
 	}
 
@@ -88,12 +88,12 @@ public static class LexicalStats
 		var sb = new StringBuilder();
 
 		string[] orderedCategories = {
-			"keywords",
-			"identifier",
-			"number literals",
-			"string literals",
-			"operators",
-			"other lexemes"
+			Categories.Keywords,
+			Categories.Identifier,
+			Categories.NumberLiterals,
+			Categories.StringLiterals,
+			Categories.Operators,
+			Categories.OtherLexemes
 		};
 
 		foreach (string category in orderedCategories)
@@ -102,5 +102,15 @@ public static class LexicalStats
 		}
 
 		return sb.ToString().TrimEnd();
+	}
+
+	private static class Categories
+	{
+		public const string Keywords = "keywords";
+		public const string Identifier = "identifier";
+		public const string NumberLiterals = "number literals";
+		public const string StringLiterals = "string literals";
+		public const string Operators = "operators";
+		public const string OtherLexemes = "other lexemes";
 	}
 }

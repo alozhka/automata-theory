@@ -111,6 +111,11 @@ public class Lexer
                 return new Token(TokenType.ExponentiationSign);
 			case '!':
 				_scanner.Advance();
+				if (_scanner.Peek() == '=')
+				{
+					_scanner.Advance();
+					return new Token(TokenType.Unequal);
+				}
 				return new Token(TokenType.LogicalNot);
 			case '<':
                 _scanner.Advance();
