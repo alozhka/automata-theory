@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Antlr4 Include="Grammars\MysticGameScriptGrammar.g4">
+            <Listener>true</Listener>
+            <Visitor>false</Visitor>
+            <GAtn>false</GAtn>
+            <Error>false</Error>
+            <Package>MysticGameScript</Package>
+        </Antlr4>
+        <Antlr4 Include="Grammars\MysticGameScriptLexer.g4">
+            <Listener>true</Listener>
+            <Visitor>false</Visitor>
+            <GAtn>false</GAtn>
+            <Error>false</Error>
+            <Package>MysticGameScript</Package>
+        </Antlr4>
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Antlr4.Runtime.Standard" Version="4.13.1" />
+      <PackageReference Include="Antlr4BuildTasks" Version="12.11.0" />
+    </ItemGroup>
+
+</Project>
