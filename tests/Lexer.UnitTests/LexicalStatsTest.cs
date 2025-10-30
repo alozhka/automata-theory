@@ -1,6 +1,6 @@
 ﻿using SqlLexer;
 
-namespace SqlLexer.UnitTests;
+namespace Lexer.UnitTests;
 
 public class LexicalStatsTest
 {

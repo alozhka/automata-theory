@@ -1,6 +1,6 @@
 using SqlLexer;
 
-namespace SqlLexer.UnitTests;
+namespace Lexer.UnitTests;
 
 public class LexerTest
 {
@@ -407,7 +407,7 @@ public class LexerTest
     private List<Token> Tokenize(string sql)
     {
         List<Token> results = [];
-        Lexer lexer = new(sql);
+        SqlLexer.Lexer lexer = new(sql);
 
         for (Token t = lexer.ParseToken(); t.Type != TokenType.EndOfFile; t = lexer.ParseToken())
         {
