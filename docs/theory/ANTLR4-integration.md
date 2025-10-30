@@ -22,6 +22,17 @@ dotnet list package
 
 Должны отобразиться установленные пакеты `Antlr4.Runtime.Standard` и `Antlr4BuildTasks`.
 
+### Дополнительно:
+
+Установите java, если её ещё нет
+
+```bash
+brew install openjdk@17
+java -version
+```
+
+На ней будет запускаться генератор.
+
 ---
 
 ## Шаг 2. Создание грамматики

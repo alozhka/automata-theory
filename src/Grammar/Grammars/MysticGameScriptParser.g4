@@ -1,7 +1,7 @@
-parser grammar Grammar;
+parser grammar MysticGameScriptParser;
 
 options {
-    tokenVocab = Lexer;
+    tokenVocab = MysticGameScriptLexer;
 }
 
 // ============================================================================

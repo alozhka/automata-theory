@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
@@ -7,14 +7,14 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Antlr4 Include="Grammars\MysticGameScriptGrammar.g4">
+        <Antlr4 Include="Grammars\MysticGameScriptLexer.g4">
             <Listener>true</Listener>
             <Visitor>false</Visitor>
             <GAtn>false</GAtn>
             <Error>false</Error>
             <Package>MysticGameScript</Package>
         </Antlr4>
-        <Antlr4 Include="Grammars\MysticGameScriptLexer.g4">
+        <Antlr4 Include="Grammars\MysticGameScriptParser.g4">
             <Listener>true</Listener>
             <Visitor>false</Visitor>
             <GAtn>false</GAtn>
