@@ -138,10 +138,6 @@ WS
 // FRAGMENTS (Фрагменты)
 // ============================================================================
 
-fragment DIGIT
-    : [0-9]
-    ;
+fragment DIGIT: [0-9];
 
-fragment LETTER
-    : [a-zA-Z]
-    ;
+fragment LETTER: [a-zA-Z];
