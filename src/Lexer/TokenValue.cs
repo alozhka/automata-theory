@@ -1,6 +1,6 @@
 using System.Globalization;
 
-namespace SqlLexer;
+namespace Lexer;
 
 public class TokenValue
 {

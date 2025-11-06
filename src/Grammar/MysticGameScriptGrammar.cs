@@ -6,7 +6,7 @@ using MysticGameScript;
 
 namespace Grammar;
 
-public static class MysticGameScript
+public static class MysticGameScriptGrammar
 {
     public static void ValidateQuery(string statement)
     {

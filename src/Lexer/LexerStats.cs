@@ -1,7 +1,5 @@
 using System.Text;
 
-using SqlLexer;
-
 namespace Lexer;
 
 public static class LexerStats
@@ -9,7 +7,9 @@ public static class LexerStats
     public static string CollectFromFile(string path)
     {
         if (!File.Exists(path))
+        {
             throw new FileNotFoundException($"File not found: {path}");
+        }
 
         string sourceCode = File.ReadAllText(path);
         return CollectFromSource(sourceCode);
@@ -27,10 +27,10 @@ public static class LexerStats
             [Categories.NumberLiterals] = 0,
             [Categories.StringLiterals] = 0,
             [Categories.Operators] = 0,
-            [Categories.OtherLexemes] = 0
+            [Categories.OtherLexemes] = 0,
         };
 
-        SqlLexer.Lexer lexer = new(sourceCode);
+        Lexer lexer = new(sourceCode);
         Token token;
 
         do
@@ -38,12 +38,15 @@ public static class LexerStats
             token = lexer.ParseToken();
 
             if (token.Type == TokenType.EndOfFile)
+            {
                 break;
+            }
 
             string category = GetTokenCategory(token.Type);
 
             categories[category]++;
-        } while (token.Type != TokenType.EndOfFile);
+        }
+        while (token.Type != TokenType.EndOfFile);
 
         return FormatStatistics(categories);
     }
@@ -77,7 +80,7 @@ public static class LexerStats
                 TokenType.LogicalAnd or TokenType.LogicalOr or TokenType.LogicalNot
                 => Categories.Operators,
 
-            _ => Categories.OtherLexemes
+            _ => Categories.OtherLexemes,
         };
     }
 

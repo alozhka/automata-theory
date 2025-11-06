@@ -1,6 +1,6 @@
 using System.Text;
 
-namespace SqlLexer;
+namespace Lexer;
 
 public class Token(
     TokenType type,
@@ -12,7 +12,7 @@ public class Token(
     public TokenValue? Value { get; } = value;
 
     /// <summary>
-    ///  Сравнивает токены по типу и значению.
+    ///  пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ.
     /// </summary>
     public override bool Equals(object? obj)
     {
@@ -25,7 +25,7 @@ public class Token(
     }
 
     /// <summary>
-    ///  Возвращает хеш от свойств токена.
+    ///  пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ.
     /// </summary>
     public override int GetHashCode()
     {
@@ -33,7 +33,7 @@ public class Token(
     }
 
     /// <summary>
-    /// Форматирует токен в стиле "Type (Value)".
+    /// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ "Type (Value)".
     /// </summary>
     public override string ToString()
     {

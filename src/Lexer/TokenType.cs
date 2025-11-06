@@ -1,255 +1,254 @@
-namespace SqlLexer;
+namespace Lexer;
 
 public enum TokenType
 {
-
     /// <summary>
-    ///  Ключевое слово dayzint.
+    ///  пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ dayzint.
     /// </summary>
     Dayzint,
 
-	/// <summary>
-	///  Ключевое слово fallout.
-	/// </summary>
-	Fallout,
+    /// <summary>
+    ///  пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ fallout.
+    /// </summary>
+    Fallout,
 
-	/// <summary>
-	///  Ключевое слово statum.
-	/// </summary>
-	Statum,
+    /// <summary>
+    ///  пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ statum.
+    /// </summary>
+    Statum,
 
-	/// <summary>
-	///  Ключевое слово ready.
-	/// </summary>
-	Ready,
+    /// <summary>
+    ///  пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ ready.
+    /// </summary>
+    Ready,
 
-	/// <summary>
-	///  Ключевое слово noready.
-	/// </summary>
-	Noready,
+    /// <summary>
+    ///  пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ noready.
+    /// </summary>
+    Noready,
 
-	/// <summary>
-	///  Ключевое слово strike.
-	/// </summary>
-	Strike,
+    /// <summary>
+    ///  пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ strike.
+    /// </summary>
+    Strike,
 
-	/// <summary>
-	///  Ключевое слово araya.
-	/// </summary>
-	Araya,
+    /// <summary>
+    ///  пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ araya.
+    /// </summary>
+    Araya,
 
-	/// <summary>
-	///  Ключевое слово raid.
-	/// </summary>
-	Raid,
+    /// <summary>
+    ///  пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ raid.
+    /// </summary>
+    Raid,
 
-	/// <summary>
-	///  Ключевое слово exodus.
-	/// </summary>
-	Exodus,
+    /// <summary>
+    ///  пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ exodus.
+    /// </summary>
+    Exodus,
 
-	/// <summary>
-	///  Ключевое слово ghost.
-	/// </summary>
-	Ghost,
+    /// <summary>
+    ///  пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ ghost.
+    /// </summary>
+    Ghost,
 
-	/// <summary>
-	///  Ключевое слово exodusln.
-	/// </summary>
-	Exodusln,
+    /// <summary>
+    ///  пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ exodusln.
+    /// </summary>
+    Exodusln,
 
-	/// <summary>
-	///  Ключевое слово iffy.
-	/// </summary>
-	Iffy,
+    /// <summary>
+    ///  пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ iffy.
+    /// </summary>
+    Iffy,
 
-	/// <summary>
-	///  Ключевое слово elysian.
-	/// </summary>
-	Elysian,
+    /// <summary>
+    ///  пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ elysian.
+    /// </summary>
+    Elysian,
 
-	/// <summary>
-	///  Ключевое слово elysiffy.
-	/// </summary>
-	Elysiffy,
+    /// <summary>
+    ///  пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ elysiffy.
+    /// </summary>
+    Elysiffy,
 
-	/// <summary>
-	///  Ключевое слово valorant.
-	/// </summary>
-	Valorant,
+    /// <summary>
+    ///  пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ valorant.
+    /// </summary>
+    Valorant,
 
-	/// <summary>
-	///  Ключевое слово forza.
-	/// </summary>
-	Forza,
+    /// <summary>
+    ///  пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ forza.
+    /// </summary>
+    Forza,
 
-	/// <summary>
-	///  Ключевое слово breakout.
-	/// </summary>
-	Breakout,
+    /// <summary>
+    ///  пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ breakout.
+    /// </summary>
+    Breakout,
 
-	/// <summary>
-	///  Ключевое слово contra.
-	/// </summary>
-	Contra,
+    /// <summary>
+    ///  пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ contra.
+    /// </summary>
+    Contra,
 
-	/// <summary>
-	///  Ключевое слово funkotron.
-	/// </summary>
-	Funkotron,
+    /// <summary>
+    ///  пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ funkotron.
+    /// </summary>
+    Funkotron,
 
-	/// <summary>
-	///  Ключевое слово returnal.
-	/// </summary>
-	Returnal,
+    /// <summary>
+    ///  пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ returnal.
+    /// </summary>
+    Returnal,
 
-	/// <summary>
-	///  Ключевое слово ?.
-	/// </summary>
-	Nullable,
+    /// <summary>
+    ///  пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ ?.
+    /// </summary>
+    Nullable,
 
-	/// <summary>
-	///  Идентификатор (имя символа).
-	/// </summary>
-	Identifier,
+    /// <summary>
+    ///  пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ).
+    /// </summary>
+    Identifier,
 
-	/// <summary>
-	///  Литерал числа.
-	/// </summary>
-	NumericLiteral,
+    /// <summary>
+    ///  пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ.
+    /// </summary>
+    NumericLiteral,
 
-	/// <summary>
-	///  Литерал строки.
-	/// </summary>
-	StringLiteral,
+    /// <summary>
+    ///  пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ.
+    /// </summary>
+    StringLiteral,
 
-	/// <summary>
-	///  Литерал функции.
-	/// </summary>
-	FuncotronLiteral,
+    /// <summary>
+    ///  пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ.
+    /// </summary>
+    FuncotronLiteral,
 
-	/// <summary>
-	///  Оператор сложения.
-	/// </summary>
-	PlusSign,
+    /// <summary>
+    ///  пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ.
+    /// </summary>
+    PlusSign,
 
-	/// <summary>
-	///  Оператор присваивания.
-	/// </summary>
-	Assign,
+    /// <summary>
+    ///  пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ.
+    /// </summary>
+    Assign,
 
-	/// <summary>
-	///  Оператор равенства.
-	/// </summary>
-	Equal,
+    /// <summary>
+    ///  пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ.
+    /// </summary>
+    Equal,
 
-	/// <summary>
-	///  Оператор нерваенства.
-	/// </summary>
-	Unequal,
+    /// <summary>
+    ///  пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ.
+    /// </summary>
+    Unequal,
 
-	/// <summary>
-	///  Оператор вычитания.
-	/// </summary>
-	MinusSign,
+    /// <summary>
+    ///  пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ.
+    /// </summary>
+    MinusSign,
 
-	/// <summary>
-	///  Логическое И.
-	/// </summary>
-	LogicalAnd,
+    /// <summary>
+    ///  пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ.
+    /// </summary>
+    LogicalAnd,
 
-	/// <summary>
-	///  Логическое ИЛИ.
-	/// </summary>
-	LogicalOr,
+    /// <summary>
+    ///  пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ.
+    /// </summary>
+    LogicalOr,
 
-	/// <summary>
-	///  Логическое НЕ.
-	/// </summary>
-	LogicalNot,
+    /// <summary>
+    ///  пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ.
+    /// </summary>
+    LogicalNot,
 
-	/// <summary>
-	///  Оператор умножения.
-	/// </summary>
-	MultiplySign,
+    /// <summary>
+    ///  пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ.
+    /// </summary>
+    MultiplySign,
 
-	/// <summary>
-	///  Оператор деления.
-	/// </summary>
-	DivideSign,
+    /// <summary>
+    ///  пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ.
+    /// </summary>
+    DivideSign,
 
-	/// <summary>
-	///  Оператор деления по модулю.
-	/// </summary>
-	ModuloSign,
+    /// <summary>
+    ///  пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ.
+    /// </summary>
+    ModuloSign,
 
-	/// <summary>
-	///  Оператор возведения в степень.
-	/// </summary>
-	ExponentiationSign,
+    /// <summary>
+    ///  пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ.
+    /// </summary>
+    ExponentiationSign,
 
-	/// <summary>
-	///  Оператор сравнения "меньше".
-	/// </summary>
-	LessThan,
+    /// <summary>
+    ///  пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ "пїЅпїЅпїЅпїЅпїЅпїЅ".
+    /// </summary>
+    LessThan,
 
-	/// <summary>
-	///  Оператор сравнения "меньше или равно".
-	/// </summary>
-	LessThanOrEqual,
+    /// <summary>
+    ///  пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ "пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ".
+    /// </summary>
+    LessThanOrEqual,
 
-	/// <summary>
-	///  Оператор сравнения "больше".
-	/// </summary>
-	GreaterThan,
+    /// <summary>
+    ///  пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ "пїЅпїЅпїЅпїЅпїЅпїЅ".
+    /// </summary>
+    GreaterThan,
 
-	/// <summary>
-	///  Оператор сравнения "больше или равно".
-	/// </summary>
-	GreaterThanOrEqual,
+    /// <summary>
+    ///  пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ "пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ".
+    /// </summary>
+    GreaterThanOrEqual,
 
-	/// <summary>
-	///  Открывающая круглая скобка '('.
-	/// </summary>
-	OpenParenthesis,
+    /// <summary>
+    ///  пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ '('.
+    /// </summary>
+    OpenParenthesis,
 
-	/// <summary>
-	///  Закрывающая круглая скобка ')'.
-	/// </summary>
-	CloseParenthesis,
+    /// <summary>
+    ///  пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ ')'.
+    /// </summary>
+    CloseParenthesis,
 
-	/// <summary>
-	///  Открывающая фигурная скобка '{'.
-	/// </summary>
-	OpenBrace,
+    /// <summary>
+    ///  пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ '{'.
+    /// </summary>
+    OpenBrace,
 
-	/// <summary>
-	///  Закрывающая фигурная скобка '}'.
-	/// </summary>
-	CloseBrace,
+    /// <summary>
+    ///  пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ '}'.
+    /// </summary>
+    CloseBrace,
 
-	/// <summary>
-	///  Запятая ','
-	/// </summary>
-	Comma,
+    /// <summary>
+    ///  пїЅпїЅпїЅпїЅпїЅпїЅпїЅ ','
+    /// </summary>
+    Comma,
 
-	/// <summary>
-	///  Разделитель ';'
-	/// </summary>
-	Semicolon,
+    /// <summary>
+    ///  пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ ';'
+    /// </summary>
+    Semicolon,
 
-	/// <summary>
-	///  Разделитель ':'
-	/// </summary>
-	Colon,
+    /// <summary>
+    ///  пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ ':'
+    /// </summary>
+    Colon,
 
-	/// <summary>
-	///  Конец файла.
-	/// </summary>
-	EndOfFile,
+    /// <summary>
+    ///  пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ.
+    /// </summary>
+    EndOfFile,
 
-	/// <summary>
-	///  Недопустимая лексема.
-	/// </summary>
-	Error,
+    /// <summary>
+    ///  пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ.
+    /// </summary>
+    Error,
 }
