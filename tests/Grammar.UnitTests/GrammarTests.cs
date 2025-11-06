@@ -162,6 +162,9 @@ public class GrammarTests
             "funkotron test() { returnal 5; }",
             // 56. breakout вне цикла (синтаксически валидно, семантически - нет)
             "breakout;",
+            
+            // 57. целочисленная константа с заданным значением
+            "monument dayzint x3 = 10;",
         };
     }
 
@@ -202,6 +205,8 @@ public class GrammarTests
             "statum x = !!y;",
             // 16. Присваивание без переменной
             "= 5;",
+            // 17. Объявление константы без значения
+            "monument dayzint x;",
         };
     }
 }
