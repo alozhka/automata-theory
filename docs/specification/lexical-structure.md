@@ -79,7 +79,7 @@ funkotron divide(dayzint a, dayzint b): ?fallout {
     returnal a / b;
 }
 
-funkotron print(strike str): ghost {
+funkotron print(strike str) {
     exodus(str);
 }
 ```
