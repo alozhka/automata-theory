@@ -1,0 +1,9 @@
+monument fallout PI = 3.14;
+
+maincraft()
+{
+    fallout radius;
+    raid(radius);
+    
+    exodusln(PI * radius * radius);
+}

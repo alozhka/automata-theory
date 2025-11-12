@@ -1,0 +1,10 @@
+maincraft()
+{
+    dayzint a;
+    dayzint b;
+
+    raid(a);
+    raid(b);
+    
+    exodusln(a + b);
+}
