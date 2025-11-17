@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Parser.UnitTests")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7a9f40fbb509e8da0edab61f348f603ceddb92e3")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a2bf36e544c03bb9072354a1369cf8da16a94642")]
 [assembly: System.Reflection.AssemblyProductAttribute("Parser.UnitTests")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Parser.UnitTests")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
