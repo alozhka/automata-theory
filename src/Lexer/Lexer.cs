@@ -29,6 +29,8 @@ public class Lexer
         { "RAID", TokenType.Raid },
         { "EXODUS", TokenType.Exodus },
         { "EXODUSLN", TokenType.Exodusln },
+        { "MAINCRAFT", TokenType.Maincraft },
+        { "MONUMENT", TokenType.Monument },
     };
 
     private readonly TextScanner _scanner;

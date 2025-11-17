@@ -489,3 +489,18 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+
+lw1/build/
+lw1/CMakeFiles/
+src/Lexer/bin
+src/Lexer/obj
+src/Parser/bin/
+src/Parser/obj/
+tests/Lexer.UnitTests/bin
+tests/Lexer.UnitTests/obj
+tests/Parser.UnitTests/bin/
+tests/Parser.UnitTests/obj/
+.vs
+docs/competitors/c++/task1-CircleSquare/build
+docs/competitors/c++/task2-GCD/build
+docs/competitors/c++/task3-Reverse/build

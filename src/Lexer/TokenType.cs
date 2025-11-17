@@ -3,6 +3,16 @@ namespace Lexer;
 public enum TokenType
 {
     /// <summary>
+    /// Главная функция программы maincraft
+    /// </summary>
+    Maincraft,
+
+    /// <summary>
+    /// Объявление константы monument
+    /// </summary>
+    Monument,
+
+    /// <summary>
     ///  �������� ����� dayzint.
     /// </summary>
     Dayzint,
