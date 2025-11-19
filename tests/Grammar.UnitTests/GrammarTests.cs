@@ -255,6 +255,39 @@ public class GrammarTests
                 printInt(x); # выведет 0
             }
             """,
+            """
+            monument fallout PI = 3.14;
+            maincraft()
+            {
+                fallout radius;
+                raid(radius);
+                
+                exodusln(PI * radius * radius);
+            }
+            """,
+            """
+            monument fallout MILES_PER_KM = 1.60934;
+
+            maincraft()
+            {
+                fallout miles;
+                raid(miles);
+                
+                exodusln(miles * MILES_PER_KM);
+            }
+            """,
+            """
+            maincraft()
+            {
+                dayzint a;
+                dayzint b;
+
+                raid(a);
+                raid(b);
+                
+                exodusln(a + b);
+            }
+            """,
         };
     }
 
