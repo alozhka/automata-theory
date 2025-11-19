@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 
-namespace SqlLexer;
+namespace Lexer;
 
 /// <summary>
 ///  Лексический анализатор строки. Поддерживает подмножество строки, необходимое этому проекту.
@@ -9,27 +9,29 @@ public class Lexer
 {
     private static readonly Dictionary<string, TokenType> Keywords = new()
     {
-		{ "DAYZINT", TokenType.Dayzint },
-	    { "FALLOUT", TokenType.Fallout },
-	    { "STATUM", TokenType.Statum },
-	    { "STRIKE", TokenType.Strike },
-	    { "ARAYA", TokenType.Araya },
-	    { "GHOST", TokenType.Ghost },
-	    { "READY", TokenType.Ready },
-	    { "NOREADY", TokenType.Noready },
+        { "DAYZINT", TokenType.Dayzint },
+        { "FALLOUT", TokenType.Fallout },
+        { "STATUM", TokenType.Statum },
+        { "STRIKE", TokenType.Strike },
+        { "ARAYA", TokenType.Araya },
+        { "GHOST", TokenType.Ghost },
+        { "READY", TokenType.Ready },
+        { "NOREADY", TokenType.Noready },
         { "IFFY", TokenType.Iffy },
-	    { "ELYSIAN", TokenType.Elysian },
-	    { "ELYSIFFY", TokenType.Elysiffy },
+        { "ELYSIAN", TokenType.Elysian },
+        { "ELYSIFFY", TokenType.Elysiffy },
         { "VALORANT", TokenType.Valorant },
-	    { "FORZA", TokenType.Forza },
-	    { "BREAKOUT", TokenType.Breakout },
-	    { "CONTRA", TokenType.Contra },
+        { "FORZA", TokenType.Forza },
+        { "BREAKOUT", TokenType.Breakout },
+        { "CONTRA", TokenType.Contra },
         { "FUNKOTRON", TokenType.Funkotron },
-	    { "RETURNAL", TokenType.Returnal },
+        { "RETURNAL", TokenType.Returnal },
         { "RAID", TokenType.Raid },
-	    { "EXODUS", TokenType.Exodus },
-	    { "EXODUSLN", TokenType.Exodusln },
-	};
+        { "EXODUS", TokenType.Exodus },
+        { "EXODUSLN", TokenType.Exodusln },
+        { "MAINCRAFT", TokenType.Maincraft },
+        { "MONUMENT", TokenType.Monument },
+    };
 
     private readonly TextScanner _scanner;
 
@@ -46,7 +48,7 @@ public class Lexer
     /// </summary>
     public Token ParseToken()
     {
-		SkipWhiteSpacesAndComments();
+        SkipWhiteSpacesAndComments();
 
         if (_scanner.IsEnd())
         {
@@ -64,23 +66,23 @@ public class Lexer
             return ParseNumericLiteral();
         }
 
-		if (c == '\'' || c == '"')
-		{
-			return ParseStringLiteral();
-		}
-
-		switch (c)
+        if (c == '\'' || c == '"')
         {
-			case '?':
-				_scanner.Advance();
-				return new Token(TokenType.Nullable);
-			case ';':
+            return ParseStringLiteral();
+        }
+
+        switch (c)
+        {
+            case '?':
+                _scanner.Advance();
+                return new Token(TokenType.Nullable);
+            case ';':
                 _scanner.Advance();
                 return new Token(TokenType.Semicolon);
-			case ':':
-				_scanner.Advance();
-				return new Token(TokenType.Colon);
-			case ',':
+            case ':':
+                _scanner.Advance();
+                return new Token(TokenType.Colon);
+            case ',':
                 _scanner.Advance();
                 return new Token(TokenType.Comma);
             case '+':
@@ -95,29 +97,31 @@ public class Lexer
             case '/':
                 _scanner.Advance();
                 return new Token(TokenType.DivideSign);
-			case '=':
-				_scanner.Advance();
-				if (_scanner.Peek() == '=')
-				{
-					_scanner.Advance();
-					return new Token(TokenType.Equal);
-				}
-				return new Token(TokenType.Assign);
-			case '%':
+            case '=':
+                _scanner.Advance();
+                if (_scanner.Peek() == '=')
+                {
+                    _scanner.Advance();
+                    return new Token(TokenType.Equal);
+                }
+
+                return new Token(TokenType.Assign);
+            case '%':
                 _scanner.Advance();
                 return new Token(TokenType.ModuloSign);
             case '^':
                 _scanner.Advance();
                 return new Token(TokenType.ExponentiationSign);
-			case '!':
-				_scanner.Advance();
-				if (_scanner.Peek() == '=')
-				{
-					_scanner.Advance();
-					return new Token(TokenType.Unequal);
-				}
-				return new Token(TokenType.LogicalNot);
-			case '<':
+            case '!':
+                _scanner.Advance();
+                if (_scanner.Peek() == '=')
+                {
+                    _scanner.Advance();
+                    return new Token(TokenType.Unequal);
+                }
+
+                return new Token(TokenType.LogicalNot);
+            case '<':
                 _scanner.Advance();
                 if (_scanner.Peek() == '=')
                 {
@@ -135,39 +139,39 @@ public class Lexer
                 }
 
                 return new Token(TokenType.GreaterThan);
-			case '|':
-				_scanner.Advance();
-				if (_scanner.Peek() == '|')
-				{
-					_scanner.Advance();
-					return new Token(TokenType.LogicalOr);
-				}
+            case '|':
+                _scanner.Advance();
+                if (_scanner.Peek() == '|')
+                {
+                    _scanner.Advance();
+                    return new Token(TokenType.LogicalOr);
+                }
 
-				_scanner.Advance();
-				return new Token(TokenType.Error, new TokenValue(c.ToString()));
-			case '&':
-				_scanner.Advance();
-				if (_scanner.Peek() == '&')
-				{
-					_scanner.Advance();
-					return new Token(TokenType.LogicalAnd);
-				}
+                _scanner.Advance();
+                return new Token(TokenType.Error, new TokenValue(c.ToString()));
+            case '&':
+                _scanner.Advance();
+                if (_scanner.Peek() == '&')
+                {
+                    _scanner.Advance();
+                    return new Token(TokenType.LogicalAnd);
+                }
 
-				_scanner.Advance();
-				return new Token(TokenType.Error, new TokenValue(c.ToString()));
-			case '(':
+                _scanner.Advance();
+                return new Token(TokenType.Error, new TokenValue(c.ToString()));
+            case '(':
                 _scanner.Advance();
                 return new Token(TokenType.OpenParenthesis);
             case ')':
                 _scanner.Advance();
                 return new Token(TokenType.CloseParenthesis);
-			case '{':
-				_scanner.Advance();
-				return new Token(TokenType.OpenBrace);
-			case '}':
-				_scanner.Advance();
-				return new Token(TokenType.CloseBrace);
-		}
+            case '{':
+                _scanner.Advance();
+                return new Token(TokenType.OpenBrace);
+            case '}':
+                _scanner.Advance();
+                return new Token(TokenType.CloseBrace);
+        }
 
         _scanner.Advance();
         return new Token(TokenType.Error, new TokenValue(c.ToString()));
@@ -223,72 +227,72 @@ public class Lexer
         }
     }
 
-	private Token ParseStringLiteral()
-	{
-		char quoteChar = _scanner.Peek();
-		_scanner.Advance();
+    private Token ParseStringLiteral()
+    {
+        char quoteChar = _scanner.Peek();
+        _scanner.Advance();
 
-		string contents = "";
-		while (_scanner.Peek() != quoteChar)
-		{
-			if (_scanner.IsEnd())
-			{
-				return new Token(TokenType.Error, new TokenValue(contents));
-			}
+        string contents = "";
+        while (_scanner.Peek() != quoteChar)
+        {
+            if (_scanner.IsEnd())
+            {
+                return new Token(TokenType.Error, new TokenValue(contents));
+            }
 
-			if (TryParseStringLiteralEscapeSequence(out char unescaped))
-			{
-				contents += unescaped;
-			}
-			else
-			{
-				contents += _scanner.Peek();
-				_scanner.Advance();
-			}
-		}
+            if (TryParseStringLiteralEscapeSequence(out char unescaped))
+            {
+                contents += unescaped;
+            }
+            else
+            {
+                contents += _scanner.Peek();
+                _scanner.Advance();
+            }
+        }
 
-		_scanner.Advance();
+        _scanner.Advance();
 
-		return new Token(TokenType.StringLiteral, new TokenValue(contents));
-	}
+        return new Token(TokenType.StringLiteral, new TokenValue(contents));
+    }
 
-	private bool TryParseStringLiteralEscapeSequence(out char unescaped)
-	{
-		if (_scanner.Peek() == '\\')
-		{
-			_scanner.Advance();
-			char nextChar = _scanner.Peek();
+    private bool TryParseStringLiteralEscapeSequence(out char unescaped)
+    {
+        if (_scanner.Peek() == '\\')
+        {
+            _scanner.Advance();
+            char nextChar = _scanner.Peek();
 
-			switch (nextChar)
-			{
-				case '\'':
-					_scanner.Advance();
-					unescaped = '\'';
-					return true;
-				case '\"':
-					_scanner.Advance();
-					unescaped = '\"';
-					return true;
-				case '\\':
-					_scanner.Advance();
-					unescaped = '\\';
-					return true;
-				case 'n':
-					_scanner.Advance();
-					unescaped = '\n';
-					return true;
-				case 't':
-					_scanner.Advance();
-					unescaped = '\t';
-					return true;
-			}
-		}
+            switch (nextChar)
+            {
+                case '\'':
+                    _scanner.Advance();
+                    unescaped = '\'';
+                    return true;
+                case '\"':
+                    _scanner.Advance();
+                    unescaped = '\"';
+                    return true;
+                case '\\':
+                    _scanner.Advance();
+                    unescaped = '\\';
+                    return true;
+                case 'n':
+                    _scanner.Advance();
+                    unescaped = '\n';
+                    return true;
+                case 't':
+                    _scanner.Advance();
+                    unescaped = '\t';
+                    return true;
+            }
+        }
 
-		unescaped = '\0';
-		return false;
-	}
+        unescaped = '\0';
+        return false;
+    }
 
-	private void SkipWhiteSpacesAndComments()
+    private void SkipWhiteSpacesAndComments()
     {
         do
         {

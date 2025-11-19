@@ -16,11 +16,23 @@ dotnet add package Antlr4BuildTasks
 ```
 
 **Проверка:**
+
 ```bash
 dotnet list package
 ```
 
 Должны отобразиться установленные пакеты `Antlr4.Runtime.Standard` и `Antlr4BuildTasks`.
+
+### Дополнительно:
+
+Установите java, если её ещё нет
+
+```bash
+brew install openjdk@17
+java -version
+```
+
+На ней будет запускаться генератор.
 
 ---
 
@@ -51,17 +63,26 @@ WS: [ \t\r\n]+ -> skip ;
 Для настройки параметров генерации добавьте в `.csproj`:
 
 ```xml
+
 <ItemGroup>
-  <Antlr4 Include="Grammar\*.g4">
-    <Listener>true</Listener>
-    <Visitor>true</Visitor>
-  </Antlr4>
+    <Antlr4 Include="Grammar\*.g4">
+        <Listener>true</Listener>
+        <Visitor>false</Visitor>
+        <GAtn>false</GAtn>
+        <Error>false</Error>
+        <Package>MysticGameScript</Package>
+    </Antlr4>
 </ItemGroup>
 ```
 
 Параметры:
+
 - `Listener` — генерировать интерфейсы слушателей (по умолчанию `true`)
 - `Visitor` — генерировать интерфейсы посетителей (по умолчанию `false`)
+- `GAtn` — генерировать файлы ATN (Augmented Transition Network) в формате DOT для визуализации грамматики (по умолчанию
+  `false`)
+- `Error` — генерировать файлы с информацией об ошибках для отладки грамматики (по умолчанию `false`)
+- `Package` — указать пространство имён (namespace) для генерируемых классов
 
 ---
 
@@ -76,20 +97,22 @@ dotnet build
 **Проверка:**
 
 Убедитесь, что в выводе появились строки о генерации ANTLR4:
+
 ```
 Antlr4BuildTasks -> generating files for Example.g4
 ```
 
 Проверьте наличие сгенерированных файлов в `obj/Debug/net8.0/`:
+
 ```bash
 ls obj/Debug/net8.0/ | grep Example
 ```
 
 Должны появиться файлы:
+
 - `ExampleLexer.cs`
 - `ExampleParser.cs`
 - `ExampleBaseListener.cs` / `ExampleListener.cs`
-- `ExampleBaseVisitor.cs` / `ExampleVisitor.cs` (если включен Visitor)
 
 ---
 
@@ -99,36 +122,33 @@ ls obj/Debug/net8.0/ | grep Example
 
 ```csharp
 using Antlr4.Runtime;
+using Grammar.Listener;
+using MysticGameScript;
 
-// Создание входного потока
-var input = new AntlrInputStream("x = 42;");
+public static class MysticGameScript
+{
+    public static void ValidateQuery(string statement)
+    {
+        // Создание входного потока
+        AntlrInputStream stream = new(statement);
+        
+        // Создание лексера
+        MysticGameScriptLexer lexer = new(stream);
+        // Создание потока токенов
+        CommonTokenStream tokenStream = new(lexer);
+        
+        // Создание парсера
+        MysticGameScriptParser parser = new(tokenStream);
 
-// Создание лексера
-var lexer = new ExampleLexer(input);
-var tokens = new CommonTokenStream(lexer);
-
-// Создание парсера
-var parser = new ExampleParser(tokens);
-
-// Парсинг с корневого правила
-var tree = parser.program();
-
-// Вывод дерева разбора
-Console.WriteLine(tree.ToStringTree(parser));
+        // Парсинг с корневого правила
+        parser.program();
+    }
+}
 ```
-
-**Проверка:**
-```bash
-dotnet run
-```
-
-Должен вывестись результат парсинга в виде дерева.
 
 ---
 
 ## Примечания
 
-- Грамматики автоматически перекомпилируются при изменении `.g4` файлов
 - Сгенерированные файлы находятся в папке `obj/` и автоматически включаются в компиляцию
 - Для чистой пересборки используйте: `dotnet clean && dotnet build`
-- Для отладки грамматик можно использовать инструмент ANTLR4 для Java или онлайн-редакторы
