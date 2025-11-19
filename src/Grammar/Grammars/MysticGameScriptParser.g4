@@ -9,7 +9,19 @@ options {
 // -----------------------
 
 program
-    : (functionDeclaration | statement)* EOF
+    : (globalStatement)* EOF
+    ;
+
+// точка_входа = "maincraft", "()", блок_функции;
+mainCraftFunction: MAINCRAFT LPAREN RPAREN functionBlock;
+
+// глобальная_инструкция = объявление_переменной | объявление_константы | объявление_функции | maincraft | инструкция;
+globalStatement
+    : variableDeclaration SEMICOLON
+    | constantDeclaration SEMICOLON
+    | functionDeclaration
+    | mainCraftFunction
+    | statement
     ;
 
 // -----------------------
@@ -34,7 +46,7 @@ type: baseType | arrayType | nullableType;
 // EXPRESSIONS (Выражения)
 // -----------------------
 
-// литерал_выражения = число | строка | "ready" | "noready" | "ghost";
+// литерал_выражения = число | строка | "ready" | "noready" | "ghost" | массив;
 literalExpression
     : INT_LITERAL
     | FLOAT_LITERAL
@@ -42,7 +54,11 @@ literalExpression
     | READY
     | NOREADY
     | GHOST
+    | arrayLiteral
     ;
+
+// Инициализация массива: {value1, value2, ...}
+arrayLiteral: LBRACE (expression (COMMA expression)*)? RBRACE;
 
 // элемент_массива = идентификатор, "[", выражение, "]";
 arrayElement: IDENTIFIER LBRACKET expression RBRACKET;
@@ -109,6 +125,23 @@ constantDeclaration: MONUMENT type IDENTIFIER ASSIGN expression;
 // блок = "{", {инструкция}, "}";
 block: LBRACE statement* RBRACE;
 
+// блок_функции = "{", {инструкция_функции}, "}";
+functionBlock: LBRACE functionStatement* RBRACE;
+
+// инструкция_функции = объявление_переменной | объявление_константы | присваивание | условие
+//              | цикл_while | цикл_for | вызов_функции | вызов_заложенной_функции | возврат;
+functionStatement
+    : variableDeclaration SEMICOLON
+    | constantDeclaration SEMICOLON
+    | assignment SEMICOLON
+    | conditionalStatement
+    | whileLoop
+    | forLoop
+    | functionCall SEMICOLON
+    | builtInFunctionCall SEMICOLON
+    | returnStatement
+    ;
+
 // если = "iffy", "(", выражение, ")", блок;
 ifStatement: IFFY LPAREN expression RPAREN block;
 
@@ -159,5 +192,5 @@ parameter: type IDENTIFIER;
 // список_параметров = параметр, {",", параметр};
 parameterList: parameter (COMMA parameter)*;
 
-// объявление_функции = "funkotron", идентификатор, "(", [список_параметров], ")", [":", тип], блок;
-functionDeclaration: FUNKOTRON IDENTIFIER LPAREN parameterList? RPAREN (COLON type)? block;
+// объявление_функции = "funkotron", идентификатор, "(", [список_параметров], ")", [":", тип], блок_функции;
+functionDeclaration: FUNKOTRON IDENTIFIER LPAREN parameterList? RPAREN (COLON type)? functionBlock;

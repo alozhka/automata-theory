@@ -41,6 +41,9 @@ EXODUS      : 'exodus';
 EXODUSLN    : 'exodusln';
 RAID        : 'raid';
 
+// Точка входа
+MAINCRAFT   : 'maincraft';
+
 // -----------------------
 // Операторы
 // -----------------------
