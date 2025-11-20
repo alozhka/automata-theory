@@ -24,213 +24,213 @@ public class GrammarTests
         {
             // Объявление переменных - базовые типы
             // 1. целочисленная переменная со значением по умолчанию 0
-            "dayzint x;",
+            "dayzint x; maincraft() {}",
 
             // 2. целочисленная переменная со значением по умолчанию ghost
-            "?dayzint x; ? dayzint x;",
+            "?dayzint x; ? dayzint x; maincraft() {}",
 
             // 3. целочисленная переменная с заданным значением
-            "dayzint x2 = 5;",
+            "dayzint x2 = 5; maincraft() {}",
 
             // 4. переменная с плавающей запятой со значением по умолчанию 0
-            "fallout x;",
+            "fallout x; maincraft() {}",
 
             // 5. переменная с плавающей запятой со значением по умолчанию ghost
-            "?fallout x;",
+            "?fallout x; maincraft() {}",
 
             // 6. переменная с плавающей запятой с заданным значением
-            "fallout x2 = 7.9;",
+            "fallout x2 = 7.9; maincraft() {}",
 
             // 7. логическая переменная со значением по умолчанию 0
-            "statum x;",
+            "statum x; maincraft() {}",
 
             // 8. логическая переменная со значением по умолчанию ghost
-            "?statum x;",
+            "?statum x; maincraft() {}",
 
             // 9. логическая переменная с заданным значением
-            "statum x2 = ready;",
+            "statum x2 = ready; maincraft() {}",
 
             // 10. строка со значением по умолчанию 0
-            "strike x;",
+            "strike x; maincraft() {}",
 
             // 11. строка со значением по умолчанию ghost
-            "?strike x;",
+            "?strike x; maincraft() {}",
 
             // 12. строка с заданным значением
-            "strike x2 = \"sere\";",
+            "strike x2 = \"sere\"; maincraft() {}",
 
             // Массивы
             // 13. массив с типом dayzint с значением по умолчанию
-            "araya<dayzint> arr;",
+            "araya<dayzint> arr; maincraft() {}",
 
             // 14. массив с типом dayzint с значением по умолчанию ghost
-            "?araya<dayzint> arr;",
+            "?araya<dayzint> arr; maincraft() {}",
 
             // Встроенные функции
             // 15. чтение данных в переменную
-            "raid(x);",
+            "maincraft() { raid(x); }",
 
             // 16. вывод данных переменной
-            "exodus(x);",
+            "maincraft() { exodus(x); }",
 
             // 17. вывод ghost'a
-            "exodus(ghost);",
+            "maincraft() { exodus(ghost); }",
 
             // 18. вывод с переносом строки
-            "exodusln(x);",
+            "maincraft() { exodusln(x); }",
 
             // Управляющие конструкции
             // 19. условие iffy
-            "iffy (x == 5) { }",
+            "maincraft() { iffy (x == 5) { } }",
 
             // 20. выполнение кода, если условие оказалось ложным elysian
-            "iffy (x == 5) { } elysian { }",
+            "maincraft() { iffy (x == 5) { } elysian { } }",
 
             // 21. условие, если предыдущее оказалось ложным elysiffy
-            "iffy (x == 5) { } elysiffy (x == 10) { }",
+            "maincraft() { iffy (x == 5) { } elysiffy (x == 10) { } }",
 
             // 22. цикл пока
-            "valorant (x < 5) { }",
+            "maincraft() { valorant (x < 5) { } }",
 
             // 23. цикл for
-            "forza (dayzint j = 0; j < 5; j = j + 1) { }",
+            "maincraft() { forza (dayzint j = 0; j < 5; j = j + 1) { } }",
 
             // 24. выход из функции (breakout)
-            "valorant (x < 5) { breakout; }",
+            "maincraft() { valorant (x < 5) { breakout; } }",
 
             // 25. переход к следующей итерации цикла
-            "valorant (x < 5) { contra; }",
+            "maincraft() { valorant (x < 5) { contra; } }",
 
             // Функции
             // 26. объявление функции без параметров
-            "funkotron x(): dayzint { returnal 0; }",
+            "funkotron x(): dayzint { returnal 0; } maincraft() {}",
 
             // 27. объявление функции с параметрами
-            "funkotron divide(dayzint a, dayzint b): ?fallout { returnal a / b; }",
+            "funkotron divide(dayzint a, dayzint b): ?fallout { returnal a / b; } maincraft() {}",
 
             // 28. возврат данных из функции
-            "funkotron test(): dayzint { dayzint z; returnal z; }",
+            "funkotron test(): dayzint { dayzint z; returnal z; } maincraft() {}",
 
             // Операторы - арифметические
             // 29. оператор +
-            "dayzint result = x + y;",
+            "dayzint result = x + y; maincraft() {}",
 
             // 30. оператор -
-            "dayzint result = x - y;",
+            "dayzint result = x - y; maincraft() {}",
 
             // 31. оператор *
-            "dayzint result = x * y;",
+            "dayzint result = x * y; maincraft() {}",
 
             // 32. оператор /
-            "dayzint result = x / y;",
+            "dayzint result = x / y; maincraft() {}",
 
             // 33. оператор %
-            "dayzint result = x % y;",
+            "dayzint result = x % y; maincraft() {}",
 
             // Операторы - присваивание
             // 34. оператор =
-            "x = y;",
+            "maincraft() { x = y; }",
 
             // Операторы - сравнение
             // 35. оператор ==
-            "statum result = x == y;",
+            "statum result = x == y; maincraft() {}",
 
             // 36. оператор !=
-            "statum result = x != y;",
+            "statum result = x != y; maincraft() {}",
 
             // 37. оператор <
-            "statum result = x < y;",
+            "statum result = x < y; maincraft() {}",
 
             // 38. оператор >
-            "statum result = x > y;",
+            "statum result = x > y; maincraft() {}",
 
             // 39. оператор <=
-            "statum result = x <= y;",
+            "statum result = x <= y; maincraft() {}",
 
             // 40. оператор >=
-            "statum result = x >= y;",
+            "statum result = x >= y; maincraft() {}",
 
             // Операторы - логические
             // 41. оператор &&
-            "statum result = x && y;",
+            "statum result = x && y; maincraft() {}",
 
             // 42. оператор ||
-            "statum result = x || y;",
+            "statum result = x || y; maincraft() {}",
 
             // 43. оператор !
-            "statum result = !x;",
+            "statum result = !x; maincraft() {}",
 
             // Дополнительные встроенные функции
             // 44. функция min
-            "dayzint result = min(x, y);",
+            "dayzint result = min(x, y); maincraft() {}",
 
             // 45. функция max
-            "dayzint result = max(x, y);",
+            "dayzint result = max(x, y); maincraft() {}",
 
             // 46. функция abs
-            "dayzint result = abs(x);",
+            "dayzint result = abs(x); maincraft() {}",
 
             // 47. функция round
-            "dayzint result = round(x);",
+            "dayzint result = round(x); maincraft() {}",
 
             // 48. функция ceil
-            "dayzint result = ceil(x);",
+            "dayzint result = ceil(x); maincraft() {}",
 
             // 49. функция floor
-            "dayzint result = floor(x);",
+            "dayzint result = floor(x); maincraft() {}",
 
             // Комплексные выражения
             // 50. сложное выражение с приоритетом операторов
-            "dayzint result = x + y * z;",
+            "dayzint result = x + y * z; maincraft() {}",
 
             // 51. выражение со скобками
-            "dayzint result = (x + y) * z;",
+            "dayzint result = (x + y) * z; maincraft() {}",
 
             // 52. вложенные скобки
-            "dayzint result = ((x + y) * z) / (a - b);",
+            "dayzint result = ((x + y) * z) / (a - b); maincraft() {}",
 
             // Комментарии
             // 53. однострочный комментарий
-            "# это комментарий\ndayzint x;",
+            "# это комментарий\ndayzint x; maincraft() {}",
 
             // 54. многострочный комментарий
-            "\\* это многострочный\nкомментарий *\\\ndayzint x;",
+            "\\* это многострочный\nкомментарий *\\\ndayzint x; maincraft() {}",
 
             // Дополнительные синтаксически валидные конструкции
             // 55. функция без типа возврата, но с returnal (синтаксически валидно)
-            "funkotron test() { returnal 5; }",
+            "funkotron test() { returnal 5; } maincraft() {}",
 
-            // 56. breakout вне цикла
-            "breakout;",
+            // 56. breakout
+            "maincraft() { breakout; }",
 
             // 57. целочисленная константа с заданным значением
-            "monument dayzint x3 = 10;",
+            "monument dayzint x3 = 10; maincraft() {}",
 
             // Новая функциональность - массивы с инициализацией
             // 58. пустой массив
-            "araya<dayzint> arr = {};",
+            "araya<dayzint> arr = {}; maincraft() {}",
 
             // 59. массив с несколькими элементами
-            "araya<dayzint> arr2 = {4, 5};",
+            "araya<dayzint> arr2 = {4, 5}; maincraft() {}",
 
             // 60. массив с nullable типом и ghost значениями
-            "araya<?dayzint> arr3 = {3, 4, ghost, 5};",
+            "araya<?dayzint> arr3 = {3, 4, ghost, 5}; maincraft() {}",
 
             // Новая функциональность - escape последовательности в строках
             // 61. экранированная двойная кавычка
-            "strike str = \"Hello \\\"World\\\"\";",
+            "strike str = \"Hello \\\"World\\\"\"; maincraft() {}",
 
             // 62. экранированная одинарная кавычка
-            "strike str2 = 'It\\'s working';",
+            "strike str2 = 'It\\'s working'; maincraft() {}",
 
             // 63. экранированный обратный слэш
-            "strike str3 = \"C:\\\\Users\\\\test\";",
+            "strike str3 = \"C:\\\\Users\\\\test\"; maincraft() {}",
 
             // 64. перенос строки в строке
-            "strike str4 = \"Line 1\\nLine 2\";",
+            "strike str4 = \"Line 1\\nLine 2\"; maincraft() {}",
 
             // 65. табуляция в строке
-            "strike str5 = \"Col1\\tCol2\";",
+            "strike str5 = \"Col1\\tCol2\"; maincraft() {}",
 
             // Точка входа maincraft
             // 66. простая maincraft функция
@@ -353,6 +353,7 @@ public class GrammarTests
 
             // 19. Массив с лишней запятой в конце
             "araya<dayzint> arr = {1, 2, 3,};",
+            "dayzint result = x  + + y; maincraft() {}",
         };
     }
 }

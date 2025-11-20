@@ -9,19 +9,17 @@ options {
 // -----------------------
 
 program
-    : (globalStatement)* EOF
+    : (globalStatement)* mainCraftFunction EOF
     ;
 
 // точка_входа = "maincraft", "()", блок_функции;
 mainCraftFunction: MAINCRAFT LPAREN RPAREN functionBlock;
 
-// глобальная_инструкция = объявление_переменной | объявление_константы | объявление_функции | maincraft | инструкция;
+// глобальная_инструкция = объявление_переменной | объявление_константы | объявление_функции | инструкция;
 globalStatement
     : variableDeclaration SEMICOLON
     | constantDeclaration SEMICOLON
     | functionDeclaration
-    | mainCraftFunction
-    | statement
     ;
 
 // -----------------------
@@ -126,21 +124,7 @@ constantDeclaration: MONUMENT type IDENTIFIER ASSIGN expression;
 block: LBRACE statement* RBRACE;
 
 // блок_функции = "{", {инструкция_функции}, "}";
-functionBlock: LBRACE functionStatement* RBRACE;
-
-// инструкция_функции = объявление_переменной | объявление_константы | присваивание | условие
-//              | цикл_while | цикл_for | вызов_функции | вызов_заложенной_функции | возврат;
-functionStatement
-    : variableDeclaration SEMICOLON
-    | constantDeclaration SEMICOLON
-    | assignment SEMICOLON
-    | conditionalStatement
-    | whileLoop
-    | forLoop
-    | functionCall SEMICOLON
-    | builtInFunctionCall SEMICOLON
-    | returnStatement
-    ;
+functionBlock: LBRACE statement* RBRACE;
 
 // если = "iffy", "(", выражение, ")", блок;
 ifStatement: IFFY LPAREN expression RPAREN block;
