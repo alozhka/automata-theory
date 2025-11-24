@@ -1,6 +1,4 @@
-﻿using System;
-
-using Execution;
+﻿using Execution;
 
 using Lexer;
 
@@ -18,14 +16,8 @@ public class Parser
         _tokens = new TokenStream(code);
     }
 
-    private Parser(string code)
-    {
-        _environment = new ConsoleEnvironment();
-        _tokens = new TokenStream(code);
-    }
-
     /// <summary>
-    ///программа = {глобальная_инструкция}, точка_входа;
+    /// программа = {глобальная_инструкция}, точка_входа;
     /// </summary>
     public void ParseProgram()
     {
@@ -35,24 +27,20 @@ public class Parser
             ParseGlobalDeclaration();
         }
 
-        if (_tokens.Peek().Type == TokenType.Maincraft)
-        {
-            ParseMaincraft();
-        }
+        ParseMaincraft();
     }
 
     /// <summary>
     /// Выполняет разбор выражения и возвращает результат.
     /// </summary>
-    public Row EvaluateExpression(string code)
+    public Row EvaluateExpression()
     {
-        Parser p = new(code);
-        object result = p.ParseExpression();
+        object result = ParseExpression();
         return new Row(result);
     }
 
     /// <summary>
-    ///глобальная_инструкция = объявление_переменной | объявление_константы | объявление_функции;
+    /// глобальная_инструкция = объявление_переменной | объявление_константы | объявление_функции;
     /// </summary>
     private void ParseGlobalDeclaration()
     {
@@ -73,7 +61,7 @@ public class Parser
     }
 
     /// <summary>
-    ///объявление_переменной = тип, идентификатор, ["=", выражение], ";";
+    /// объявление_переменной = тип, идентификатор, ["=", выражение], ";";
     /// </summary>
     private void ParseVariableDeclaration()
     {
@@ -111,7 +99,7 @@ public class Parser
             _tokens.Advance();
         }
 
-        string type = ParseType();
+        ParseType();
         string name = ParseIdentifier();
 
         Match(TokenType.Assign);
@@ -122,7 +110,7 @@ public class Parser
     }
 
     /// <summary>
-    ///точка_входа = "maincraft", "(", ")", блок_функции;
+    /// точка_входа = "maincraft", "(", ")", блок_функции;
     /// </summary>
     private void ParseMaincraft()
     {
@@ -133,7 +121,7 @@ public class Parser
     }
 
     /// <summary>
-    ///блок_функции = "{", {инструкция_функции}, "}";
+    /// блок_функции = "{", {инструкция_функции}, "}";
     /// </summary>
     private void ParseBlock()
     {
@@ -149,7 +137,7 @@ public class Parser
     }
 
     /// <summary>
-    ///инструкция_функции = объявление_переменной | объявление_константы | присваивание | условие |
+    /// инструкция_функции = объявление_переменной | объявление_константы | присваивание | условие |
     /// цикл_while | цикл_for | вызов_функции | вызов_заложенной_функции | возврат;
     /// </summary>
     private void ParseStatement()
@@ -170,7 +158,7 @@ public class Parser
         }
         else if (token.Type == TokenType.Exodus || token.Type == TokenType.Exodusln)
         {
-            ParseOutputStatement(token.Type);
+            ParseOutputStatement();
         }
         else if (token.Type == TokenType.Raid)
         {
@@ -233,7 +221,7 @@ public class Parser
         _symbols[variableName] = value;
     }
 
-    private void ParseOutputStatement(TokenType functionType)
+    private void ParseOutputStatement()
     {
         _tokens.Advance();
         Match(TokenType.OpenParenthesis);
@@ -321,7 +309,6 @@ public class Parser
 
         while (_tokens.Peek().Type == TokenType.LogicalOr)
         {
-            Token operatorToken = _tokens.Peek();
             _tokens.Advance();
 
             object right = ParseLogicalAndExpression();
@@ -344,7 +331,6 @@ public class Parser
 
         while (_tokens.Peek().Type == TokenType.LogicalAnd)
         {
-            Token operatorToken = _tokens.Peek();
             _tokens.Advance();
 
             object right = ParseComparisonExpression();
@@ -451,7 +437,7 @@ public class Parser
 
             case TokenType.StringLiteral:
                 _tokens.Advance();
-                return token.Value!.ToString() ?? "";
+                return token.Value!.ToString();
 
             case TokenType.Ready:
                 _tokens.Advance();
@@ -553,11 +539,6 @@ public class Parser
 
     private object EvaluateMultiplicativeOperator(object left, object right, TokenType operatorType)
     {
-        if (left?.GetType() != right?.GetType())
-        {
-            throw new Exception($"Cannot compare different types: {left?.GetType().Name} and {right?.GetType().Name}");
-        }
-
         decimal leftNum = Convert.ToDecimal(left);
         decimal rightNum = Convert.ToDecimal(right);
 
@@ -574,12 +555,12 @@ public class Parser
     {
         if (left is string || right is string)
         {
-            return (left?.ToString() ?? "") + (right?.ToString() ?? "");
+            return (left.ToString() ?? "") + (right.ToString() ?? "");
         }
 
-        if (left?.GetType() != right?.GetType())
+        if (left.GetType() != right.GetType())
         {
-            throw new Exception($"Cannot compare different types: {left?.GetType().Name} and {right?.GetType().Name}");
+            throw new Exception($"Cannot compare different types: {left.GetType().Name} and {right.GetType().Name}");
         }
 
         decimal leftNum = Convert.ToDecimal(left);
@@ -595,7 +576,7 @@ public class Parser
 
     private object EvaluateComparison(object left, object right, TokenType operatorType)
     {
-        if (left?.GetType() == right?.GetType())
+        if (left.GetType() == right.GetType())
         {
             return operatorType switch
             {
@@ -603,13 +584,13 @@ public class Parser
                 TokenType.GreaterThan => Convert.ToDecimal(left) > Convert.ToDecimal(right),
                 TokenType.LessThanOrEqual => Convert.ToDecimal(left) <= Convert.ToDecimal(right),
                 TokenType.GreaterThanOrEqual => Convert.ToDecimal(left) >= Convert.ToDecimal(right),
-                TokenType.Equal => left!.Equals(right),
-                TokenType.Unequal => !left!.Equals(right),
+                TokenType.Equal => left.Equals(right),
+                TokenType.Unequal => !left.Equals(right),
                 _ => throw new Exception($"Unsupported comparison operator: {operatorType}"),
             };
         }
 
-        throw new Exception($"Cannot compare different types: {left?.GetType().Name} and {right?.GetType().Name}");
+        throw new Exception($"Cannot compare different types: {left.GetType().Name} and {right.GetType().Name}");
     }
 
     private void Match(TokenType expected)

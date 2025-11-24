@@ -1,10 +1,10 @@
 ﻿using Execution;
-using Parser;
 
 namespace Interpreter.Specs;
 
 public class InterpreterSteps
 {
+    /// TODO: Gherkin сделать к 5 лабораторной
     [Fact]
     public void Should_execute_sum_number_program()
     {
@@ -43,7 +43,7 @@ public class InterpreterSteps
             }
             """;
 
-        FakeEnvironment fakeEnvironment = new([10m]);
+        FakeEnvironment fakeEnvironment = new([10]);
         Interpreter interpreter = new(fakeEnvironment);
         interpreter.Execute(program);
 
@@ -65,7 +65,7 @@ public class InterpreterSteps
             }
             """;
 
-        FakeEnvironment fakeEnvironment = new([10m]);
+        FakeEnvironment fakeEnvironment = new([10]);
         Interpreter interpreter = new(fakeEnvironment);
         interpreter.Execute(program);
 

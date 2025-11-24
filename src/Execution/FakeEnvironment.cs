@@ -1,19 +1,14 @@
-using System;
-using System.Collections.Generic;
-
-using Execution;
-
-namespace Parser;
+namespace Execution;
 
 /// <summary>
-/// Поддельное окружение: работает как настоящее, но не совершает реального ввода/вывода.
+/// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ: пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ/пїЅпїЅпїЅпїЅпїЅпїЅ.
 /// </summary>
 public class FakeEnvironment : IEnvironment
 {
     private readonly List<double> _results = [];
-    private readonly Queue<object> _inputQueue = new Queue<object>();
+    private readonly Queue<double> _inputQueue = new();
 
-    public FakeEnvironment(params object[] inputs)
+    public FakeEnvironment(params double[] inputs)
     {
         for (int i = inputs.Length - 1; i >= 0; i--)
         {
@@ -23,7 +18,7 @@ public class FakeEnvironment : IEnvironment
 
     public IReadOnlyList<double> Results => _results;
 
-    public object ReadInput()
+    public double ReadInput()
     {
         if (_inputQueue.Count == 0)
         {
