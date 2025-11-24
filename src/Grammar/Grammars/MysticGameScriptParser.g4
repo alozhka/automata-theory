@@ -120,20 +120,17 @@ variableDeclaration: type IDENTIFIER (ASSIGN expression)?;
 // объявление_константы = "monument", тип, присваивание;
 constantDeclaration: MONUMENT type IDENTIFIER ASSIGN expression;
 
-// блок = "{", {инструкция}, "}";
-block: LBRACE statement* RBRACE;
-
 // блок_функции = "{", {инструкция_функции}, "}";
 functionBlock: LBRACE statement* RBRACE;
 
 // если = "iffy", "(", выражение, ")", блок;
-ifStatement: IFFY LPAREN expression RPAREN block;
+ifStatement: IFFY LPAREN expression RPAREN functionBlock;
 
 // иначе_если = "elysiffy", "(", выражение, ")", блок;
-elseIfStatement: ELYSIFFY LPAREN expression RPAREN block;
+elseIfStatement: ELYSIFFY LPAREN expression RPAREN functionBlock;
 
 // иначе = "elysian", блок;
-elseStatement: ELYSIAN block;
+elseStatement: ELYSIAN functionBlock;
 
 // условие = если, {иначе_если}, [иначе];
 conditionalStatement: ifStatement elseIfStatement* elseStatement?;
@@ -142,10 +139,10 @@ conditionalStatement: ifStatement elseIfStatement* elseStatement?;
 loopBreak: BREAKOUT SEMICOLON | CONTRA SEMICOLON;
 
 // цикл_while = "valorant", "(", выражение, ")", блок;
-whileLoop: VALORANT LPAREN expression RPAREN block;
+whileLoop: VALORANT LPAREN expression RPAREN functionBlock;
 
 // цикл_for = "forza", "(", (объявление_переменной | присваивание), ";", выражение, ";", присваивание, ")", блок;
-forLoop: FORZA LPAREN (variableDeclaration | assignment) SEMICOLON expression SEMICOLON assignment RPAREN block;
+forLoop: FORZA LPAREN (variableDeclaration | assignment) SEMICOLON expression SEMICOLON assignment RPAREN functionBlock;
 
 // возврат = "returnal", [выражение], ";";
 returnStatement: RETURNAL expression? SEMICOLON;
