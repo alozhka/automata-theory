@@ -36,6 +36,53 @@ public class AstEvaluator(Context context, IEnvironment environment) : IAstVisit
         };
     }
 
+    public void Visit(ForLoopExpression e)
+    {
+        context.PushScope(new Scope());
+        try
+        {
+            e.StartValue.Accept(this);
+            double iteratorValue = _values.Pop();
+            context.DefineVariable(e.IteratorName, iteratorValue);
+
+            while (true)
+            {
+                e.EndCondition.Accept(this);
+                double conditionResult = _values.Pop();
+
+                if (Numbers.AreEqual(0.0, conditionResult))
+                {
+                    break;
+                }
+
+                foreach (AstNode statement in e.Body)
+                {
+                    statement.Accept(this);
+                    if (_values.Count > 0 && statement is AssignmentExpression)
+                    {
+                        _values.Pop();
+                    }
+                }
+
+                if (e.StepValue != null)
+                {
+                    e.StepValue.Accept(this);
+                }
+
+                if (_values.Count > 0)
+                {
+                    _values.Pop();
+                }
+            }
+
+            _values.Push(0.0);
+        }
+        finally
+        {
+            context.PopScope();
+        }
+    }
+
     public void Visit(BinaryOperationExpression e)
     {
         e.Left.Accept(this);
@@ -118,8 +165,6 @@ public class AstEvaluator(Context context, IEnvironment environment) : IAstVisit
 
     public void Visit(AssignmentExpression e)
     {
-        // NOTE: Вычисляем выражение, и затем присваиваем его значение переменной,
-        //  сохраняя результат в стеке.
         e.Value.Accept(this);
         double value = _values.Pop();
         context.AssignVariable(e.Name, value);
@@ -131,7 +176,6 @@ public class AstEvaluator(Context context, IEnvironment environment) : IAstVisit
         context.PushScope(new Scope());
         try
         {
-            // NOTE: Вычисляем присваивания, но убираем их результат из стека.
             foreach (VariableDeclaration variable in e.Variables)
             {
                 variable.Accept(this);
@@ -148,8 +192,6 @@ public class AstEvaluator(Context context, IEnvironment environment) : IAstVisit
 
     public void Visit(VariableDeclaration d)
     {
-        // NOTE: Вычисляем инициализирующее выражение, и затем присваиваем его значение переменной,
-        //  сохраняя результат в стеке.
         double value = 0;
         if (d.Value != null)
         {
@@ -173,7 +215,6 @@ public class AstEvaluator(Context context, IEnvironment environment) : IAstVisit
     {
         context.DefineFunction(d);
 
-        // NOTE: Результат «вычисления» объявления функции — число _falseToDouble.
         _values.Push(_falseToDouble);
     }
 
@@ -202,17 +243,168 @@ public class AstEvaluator(Context context, IEnvironment environment) : IAstVisit
             argValues.Add(_values.Pop());
         }
 
-        double result = call.FunctionName.ToLower() switch
+        if (IsBuiltInFunction(call.FunctionName))
         {
-            "floor" => Math.Floor(argValues[0]),
-            "ceil" => Math.Ceiling(argValues[0]),
-            "round" => Math.Round(argValues[0]),
-            "abs" => Math.Abs(argValues[0]),
-            "max" => argValues.Max(),
-            "min" => argValues.Min(),
-            _ => throw new Exception($"Unknown function: {call.FunctionName}"),
-        };
+            double result = call.FunctionName.ToLower() switch
+            {
+                "floor" => Math.Floor(argValues[0]),
+                "ceil" => Math.Ceiling(argValues[0]),
+                "round" => Math.Round(argValues[0]),
+                "abs" => Math.Abs(argValues[0]),
+                "max" => argValues.Max(),
+                "min" => argValues.Min(),
+                _ => throw new Exception($"Unknown built-in function: {call.FunctionName}"),
+            };
+            _values.Push(result);
+        }
+        else
+        {
+            FunctionDeclaration function = context.GetFunction(call.FunctionName);
 
-        _values.Push(result);
+            foreach (double argValue in Enumerable.Reverse(argValues))
+            {
+                _values.Push(argValue);
+            }
+
+            context.PushScope(new Scope());
+            try
+            {
+                foreach (string parameterName in Enumerable.Reverse(function.Parameters))
+                {
+                    double value = _values.Pop();
+                    context.DefineVariable(parameterName, value);
+                }
+
+                double returnValue;
+
+                try
+                {
+                    foreach (AstNode statement in function.Body)
+                    {
+                        statement.Accept(this);
+
+                        if (!(statement is ReturnExpression) && _values.Count > 0)
+                        {
+                            _values.Pop();
+                        }
+                    }
+
+                    returnValue = 0.0;
+                }
+                catch (ReturnException ret)
+                {
+                    returnValue = ret.ReturnValue;
+                }
+
+                while (_values.Count > 0)
+                {
+                    _values.Pop();
+                }
+
+                _values.Push(returnValue);
+            }
+            finally
+            {
+                context.PopScope();
+            }
+        }
+    }
+
+    public void Visit(IfExpression e)
+    {
+        e.Condition.Accept(this);
+
+        double conditionValue = _values.Pop();
+        bool isTrueCondition = Numbers.AreEqual(_trueToDouble, conditionValue);
+
+        if (isTrueCondition)
+        {
+            foreach (AstNode statement in e.ThenBranch)
+            {
+                statement.Accept(this);
+                if (_values.Count > 0 && !(statement is ReturnExpression))
+                {
+                    _values.Pop();
+                }
+            }
+        }
+    }
+
+    public void Visit(WhileLoopExpression e)
+    {
+        context.PushScope(new Scope());
+        try
+        {
+            while (true)
+            {
+                e.Condition.Accept(this);
+                double conditionValue = _values.Pop();
+
+                if (Numbers.AreEqual(0.0, conditionValue))
+                {
+                    break;
+                }
+
+                foreach (AstNode statement in e.ThenBranch)
+                {
+                    statement.Accept(this);
+
+                    if (_values.Count > 0 && !(statement is ReturnExpression))
+                    {
+                        _values.Pop();
+                    }
+                }
+            }
+
+            _values.Push(0.0);
+        }
+        finally
+        {
+            context.PopScope();
+        }
+    }
+
+    public void Visit(ReturnExpression e)
+    {
+        e.Value.Accept(this);
+        double returnValue = _values.Pop();
+        throw new ReturnException(returnValue);
+    }
+
+    public void Visit(IfElseExpression e)
+    {
+        e.Condition.Accept(this);
+
+        double conditionValue = _values.Pop();
+        bool isTrueCondition = Numbers.AreEqual(_trueToDouble, conditionValue);
+        if (isTrueCondition)
+        {
+            foreach (AstNode statement in e.ThenBranch)
+            {
+                statement.Accept(this);
+                if (_values.Count > 0 && !(statement is ReturnExpression))
+                {
+                    _values.Pop();
+                }
+            }
+        }
+        else
+        {
+            foreach (AstNode statement in e.ElseBranch)
+            {
+                statement.Accept(this);
+                if (_values.Count > 0 && !(statement is ReturnExpression))
+                {
+                    _values.Pop();
+                }
+            }
+        }
+    }
+
+    private bool IsBuiltInFunction(string functionName)
+    {
+        string lowerName = functionName.ToLower();
+        return lowerName == "floor" || lowerName == "ceil" || lowerName == "round" ||
+               lowerName == "abs" || lowerName == "max" || lowerName == "min";
     }
 }
