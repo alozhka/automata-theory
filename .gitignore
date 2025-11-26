@@ -500,6 +500,7 @@ tests/Lexer.UnitTests/bin
 tests/Lexer.UnitTests/obj
 tests/Parser.UnitTests/bin/
 tests/Parser.UnitTests/obj/
+tests/Interpreter.Specs/Feature/*.feature.cs
 .vs
 docs/competitors/c++/task1-CircleSquare/build
 docs/competitors/c++/task2-GCD/build
