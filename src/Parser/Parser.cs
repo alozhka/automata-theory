@@ -61,7 +61,50 @@ public class Parser
             return ParseVariableDeclaration();
         }
 
+        if (token.Type == TokenType.Funkotron)
+        {
+            return ParseFunctionDeclaration();
+        }
+
         throw new UnexpectedLexemeException("global declaration", token);
+    }
+
+    /// <summary>
+    /// объявление_функции = "funkotron", идентификатор, "(", [параметры], ")", блок_функции;
+    /// </summary>
+    private AstNode ParseFunctionDeclaration()
+    {
+        Match(TokenType.Funkotron);
+
+        string functionName = ParseIdentifier();
+
+        List<string> parameters = ParseParameterList();
+
+        List<AstNode> nodes = ParseFunctionBlock();
+
+        return new FunctionDeclaration(functionName, parameters, nodes);
+    }
+
+    private List<string> ParseParameterList()
+    {
+        Match(TokenType.OpenParenthesis);
+        List<string> parameters = [];
+
+        if (_tokens.Peek().Type != TokenType.CloseParenthesis)
+        {
+            ParseType();
+            parameters.Add(ParseIdentifier());
+
+            while (_tokens.Peek().Type == TokenType.Comma)
+            {
+                _tokens.Advance();
+                ParseType();
+                parameters.Add(ParseIdentifier());
+            }
+        }
+
+        Match(TokenType.CloseParenthesis);
+        return parameters;
     }
 
     /// <summary>
@@ -121,6 +164,23 @@ public class Parser
         ParseBlock();
     }
 
+    private List<AstNode> ParseFunctionBlock()
+    {
+        Match(TokenType.OpenBrace);
+        List<AstNode> nodes = [];
+
+        while (_tokens.Peek().Type != TokenType.CloseBrace &&
+               _tokens.Peek().Type != TokenType.EndOfFile)
+        {
+            AstNode node = ParseStatement();
+            nodes.Add(node);
+        }
+
+        Match(TokenType.CloseBrace);
+
+        return nodes;
+    }
+
     /// <summary>
     /// блок_функции = "{", {инструкция_функции}, "}";
     /// </summary>
@@ -156,6 +216,16 @@ public class Parser
             return ParseVariableDeclaration();
         }
 
+        if (token.Type == TokenType.Iffy)
+        {
+            return ParseIffyStatement();
+        }
+
+        if (token.Type == TokenType.Forza)
+        {
+            return ParseForzaStatement();
+        }
+
         if (token.Type == TokenType.Identifier)
         {
             return ParseAssignmentOrFunctionCall();
@@ -171,7 +241,135 @@ public class Parser
             return ParseInputStatement();
         }
 
+        if (token.Type == TokenType.Valorant)
+        {
+            return ParseValorantStatement();
+        }
+
+        if (token.Type == TokenType.Returnal)
+        {
+            return ParseReturnStatement();
+        }
+
         throw new UnexpectedLexemeException("statement", token);
+    }
+
+    /// <summary>
+    /// возврат = "returnal", выражение, ";";
+    /// </summary>
+    private AstNode ParseReturnStatement()
+    {
+        Match(TokenType.Returnal);
+
+        Expression returnValue = ParseExpression();
+
+        Match(TokenType.Semicolon);
+
+        return new ReturnExpression(returnValue);
+    }
+
+    private AstNode ParseForzaStatement()
+    {
+        Match(TokenType.Forza);
+        Match(TokenType.OpenParenthesis);
+
+        if (_tokens.Peek().Type == TokenType.Nullable)
+        {
+            _tokens.Advance();
+        }
+
+        ParseType();
+        string iteratorName = ParseIdentifier();
+        Match(TokenType.Assign);
+        Expression startValue = ParseExpression();
+        Match(TokenType.Semicolon);
+
+        Expression endCondition = ParseExpression();
+        Match(TokenType.Semicolon);
+
+        string stepVarName = ParseIdentifier();
+        Match(TokenType.Assign);
+        Expression stepExpression = ParseExpression();
+        Expression stepValue = new AssignmentExpression(stepVarName, stepExpression);
+
+        Match(TokenType.CloseParenthesis);
+
+        Match(TokenType.OpenBrace);
+        List<AstNode> body = [];
+
+        while (_tokens.Peek().Type != TokenType.CloseBrace &&
+               _tokens.Peek().Type != TokenType.EndOfFile)
+        {
+            AstNode node = ParseStatement();
+            body.Add(node);
+        }
+
+        Match(TokenType.CloseBrace);
+
+        return new ForLoopExpression(iteratorName, startValue, endCondition, stepValue, body);
+    }
+
+    private AstNode ParseValorantStatement()
+    {
+        Match(TokenType.Valorant);
+        Match(TokenType.OpenParenthesis);
+
+        Expression condition = ParseExpression();
+        Match(TokenType.CloseParenthesis);
+
+        Match(TokenType.OpenBrace);
+        List<AstNode> thenBranch = [];
+
+        while (_tokens.Peek().Type != TokenType.CloseBrace &&
+               _tokens.Peek().Type != TokenType.EndOfFile)
+        {
+            AstNode node = ParseStatement();
+            thenBranch.Add(node);
+        }
+
+        Match(TokenType.CloseBrace);
+
+        return new WhileLoopExpression(condition, thenBranch);
+    }
+
+    private AstNode ParseIffyStatement()
+    {
+        Match(TokenType.Iffy);
+        Match(TokenType.OpenParenthesis);
+
+        Expression condition = ParseExpression();
+        Match(TokenType.CloseParenthesis);
+
+        Match(TokenType.OpenBrace);
+        List<AstNode> thenBranch = [];
+
+        while (_tokens.Peek().Type != TokenType.CloseBrace &&
+               _tokens.Peek().Type != TokenType.EndOfFile)
+        {
+            AstNode node = ParseStatement();
+            thenBranch.Add(node);
+        }
+
+        Match(TokenType.CloseBrace);
+
+        if (_tokens.Peek().Type == TokenType.Elysian)
+        {
+            Match(TokenType.Elysian);
+            Match(TokenType.OpenBrace);
+            List<AstNode> elseBranch = [];
+            while (_tokens.Peek().Type != TokenType.CloseBrace &&
+                   _tokens.Peek().Type != TokenType.EndOfFile)
+            {
+                AstNode node = ParseStatement();
+                elseBranch.Add(node);
+            }
+
+            Match(TokenType.CloseBrace);
+
+            return new IfElseExpression(condition, thenBranch, elseBranch);
+        }
+
+        return new IfExpression(condition, thenBranch);
     }
 
     private Expression ParseInputStatement()
@@ -214,6 +412,7 @@ public class Parser
             }
 
             Match(TokenType.CloseParenthesis);
+            Match(TokenType.Semicolon);
 
             return new FunctionCall(name, arguments);
         }

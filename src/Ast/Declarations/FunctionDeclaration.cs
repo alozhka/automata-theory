@@ -1,10 +1,8 @@
-﻿using Ast.Expressions;
-
-namespace Ast.Declarations;
+﻿namespace Ast.Declarations;
 
 public sealed class FunctionDeclaration : Declaration
 {
-    public FunctionDeclaration(string name, List<string> parameters, Expression body)
+    public FunctionDeclaration(string name, List<string> parameters, List<AstNode> body)
     {
         Name = name;
         Parameters = parameters;
@@ -15,7 +13,7 @@ public sealed class FunctionDeclaration : Declaration
 
     public List<string> Parameters { get; }
 
-    public Expression Body { get; }
+    public List<AstNode> Body { get; }
 
     public override void Accept(IAstVisitor visitor)
     {

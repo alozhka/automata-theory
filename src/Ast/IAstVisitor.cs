@@ -13,15 +13,17 @@ public interface IAstVisitor
 
     public void Visit(VariableExpression e);
 
-    // public void Visit(FunctionCallExpression e);
     public void Visit(AssignmentExpression e);
 
     // public void Visit(SequenceExpression e);
     public void Visit(VariableScopeExpression e);
 
-    // public void Visit(IfElseExpression e);
+    public void Visit(IfElseExpression e);
 
-    // public void Visit(ForLoopExpression e);
+    public void Visit(IfExpression e);
+
+    public void Visit(ForLoopExpression e);
+
     public void Visit(VariableDeclaration d);
 
     public void Visit(ConstantDeclaration d);
@@ -33,4 +35,8 @@ public interface IAstVisitor
     public void Visit(RaidExpression e);
 
     public void Visit(FunctionCall e);
+
+    public void Visit(ReturnExpression e);
+
+    public void Visit(WhileLoopExpression e);
 }
