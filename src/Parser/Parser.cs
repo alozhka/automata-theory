@@ -221,6 +221,16 @@ public class Parser
             return ParseIffyStatement();
         }
 
+        if (token.Type == TokenType.Breakout)
+        {
+            return ParseBreakoutStatement();
+        }
+
+        if (token.Type == TokenType.Contra)
+        {
+            return ParseContraStatement();
+        }
+
         if (token.Type == TokenType.Forza)
         {
             return ParseForzaStatement();
@@ -254,9 +264,20 @@ public class Parser
         throw new UnexpectedLexemeException("statement", token);
     }
 
-    /// <summary>
-    /// возврат = "returnal", выражение, ";";
-    /// </summary>
+    private AstNode ParseBreakoutStatement()
+    {
+        Match(TokenType.Breakout);
+        Match(TokenType.Semicolon);
+        return new BreakExpression();
+    }
+
+    private AstNode ParseContraStatement()
+    {
+        Match(TokenType.Contra);
+        Match(TokenType.Semicolon);
+        return new ContinueExpression();
+    }
+
     private AstNode ParseReturnStatement()
     {
         Match(TokenType.Returnal);

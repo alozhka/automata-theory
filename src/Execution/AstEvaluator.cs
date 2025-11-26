@@ -1,6 +1,7 @@
 ﻿using Ast;
 using Ast.Declarations;
 using Ast.Expressions;
+using Execution.Exceptions;
 using Lexer;
 
 namespace Execution;
@@ -45,7 +46,8 @@ public class AstEvaluator(Context context, IEnvironment environment) : IAstVisit
             double iteratorValue = _values.Pop();
             context.DefineVariable(e.IteratorName, iteratorValue);
 
-            while (true)
+            bool isNotBreaked = true;
+            while (isNotBreaked)
             {
                 e.EndCondition.Accept(this);
                 double conditionResult = _values.Pop();
@@ -57,10 +59,22 @@ public class AstEvaluator(Context context, IEnvironment environment) : IAstVisit
 
                 foreach (AstNode statement in e.Body)
                 {
-                    statement.Accept(this);
-                    if (_values.Count > 0 && statement is AssignmentExpression)
+                    try
                     {
-                        _values.Pop();
+                        statement.Accept(this);
+                        if (_values.Count > 0 && statement is AssignmentExpression)
+                        {
+                            _values.Pop();
+                        }
+                    }
+                    catch (ContinueException)
+                    {
+                        break;
+                    }
+                    catch (BreakException)
+                    {
+                        isNotBreaked = false;
+                        break;
                     }
                 }
 
@@ -283,7 +297,7 @@ public class AstEvaluator(Context context, IEnvironment environment) : IAstVisit
                     {
                         statement.Accept(this);
 
-                        if (!(statement is ReturnExpression) && _values.Count > 0)
+                        if (_values.Count > 0 && !(statement is ReturnExpression))
                         {
                             _values.Pop();
                         }
@@ -333,9 +347,10 @@ public class AstEvaluator(Context context, IEnvironment environment) : IAstVisit
     public void Visit(WhileLoopExpression e)
     {
         context.PushScope(new Scope());
+        bool isNotBreaked = true;
         try
         {
-            while (true)
+            while (isNotBreaked)
             {
                 e.Condition.Accept(this);
                 double conditionValue = _values.Pop();
@@ -347,11 +362,23 @@ public class AstEvaluator(Context context, IEnvironment environment) : IAstVisit
 
                 foreach (AstNode statement in e.ThenBranch)
                 {
-                    statement.Accept(this);
-
-                    if (_values.Count > 0 && !(statement is ReturnExpression))
+                    try
                     {
-                        _values.Pop();
+                        statement.Accept(this);
+
+                        if (_values.Count > 0 && !(statement is ReturnExpression))
+                        {
+                            _values.Pop();
+                        }
+                    }
+                    catch (ContinueException)
+                    {
+                        break;
+                    }
+                    catch (BreakException)
+                    {
+                        isNotBreaked = false;
+                        break;
                     }
                 }
             }
@@ -369,6 +396,16 @@ public class AstEvaluator(Context context, IEnvironment environment) : IAstVisit
         e.Value.Accept(this);
         double returnValue = _values.Pop();
         throw new ReturnException(returnValue);
+    }
+
+    public void Visit(ContinueExpression e)
+    {
+        throw new ContinueException();
+    }
+
+    public void Visit(BreakExpression e)
+    {
+        throw new BreakException();
     }
 
     public void Visit(IfElseExpression e)

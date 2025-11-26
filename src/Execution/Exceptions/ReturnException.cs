@@ -1,4 +1,4 @@
-﻿namespace Execution;
+﻿namespace Execution.Exceptions;
 
 public class ReturnException : Exception
 {

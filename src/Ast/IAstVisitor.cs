@@ -15,7 +15,10 @@ public interface IAstVisitor
 
     public void Visit(AssignmentExpression e);
 
-    // public void Visit(SequenceExpression e);
+    public void Visit(ContinueExpression e);
+
+    public void Visit(BreakExpression e);
+
     public void Visit(VariableScopeExpression e);
 
     public void Visit(IfElseExpression e);
