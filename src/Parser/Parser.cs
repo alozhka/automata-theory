@@ -1,4 +1,8 @@
-﻿using Execution;
+﻿using Ast;
+using Ast.Declarations;
+using Ast.Expressions;
+
+using Execution;
 
 using Lexer;
 
@@ -6,14 +10,13 @@ namespace Parser;
 
 public class Parser
 {
-    private readonly IEnvironment _environment;
     private readonly TokenStream _tokens;
-    private readonly Dictionary<string, object> _symbols = new();
+    private readonly AstEvaluator _evaluator;
 
-    public Parser(string code, IEnvironment environment)
+    public Parser(Context context, string code, IEnvironment environment)
     {
-        _environment = environment;
         _tokens = new TokenStream(code);
+        _evaluator = new AstEvaluator(context, environment);
     }
 
     /// <summary>
@@ -24,7 +27,8 @@ public class Parser
         while (_tokens.Peek().Type != TokenType.EndOfFile &&
                _tokens.Peek().Type != TokenType.Maincraft)
         {
-            ParseGlobalDeclaration();
+            AstNode nodeGlobalDeclaration = ParseGlobalDeclaration();
+            _evaluator.Evaluate(nodeGlobalDeclaration);
         }
 
         ParseMaincraft();
@@ -35,47 +39,44 @@ public class Parser
     /// </summary>
     public Row EvaluateExpression()
     {
-        object result = ParseExpression();
+        Expression expression = ParseExpression();
+        double result = _evaluator.Evaluate(expression);
         return new Row(result);
     }
 
     /// <summary>
     /// глобальная_инструкция = объявление_переменной | объявление_константы | объявление_функции;
     /// </summary>
-    private void ParseGlobalDeclaration()
+    private AstNode ParseGlobalDeclaration()
     {
         Token token = _tokens.Peek();
 
         if (token.Type == TokenType.Monument)
         {
-            ParseConstantDeclaration();
+            return ParseConstantDeclaration();
         }
-        else if (IsTypeToken(token.Type) || token.Type == TokenType.Nullable)
+
+        if (IsTypeToken(token.Type) || token.Type == TokenType.Nullable)
         {
-            ParseVariableDeclaration();
+            return ParseVariableDeclaration();
         }
-        else
-        {
-            throw new UnexpectedLexemeException("global declaration", token);
-        }
+
+        throw new UnexpectedLexemeException("global declaration", token);
     }
 
     /// <summary>
     /// объявление_переменной = тип, идентификатор, ["=", выражение], ";";
     /// </summary>
-    private void ParseVariableDeclaration()
+    private AstNode ParseVariableDeclaration()
     {
-        bool isNullable = false;
         if (_tokens.Peek().Type == TokenType.Nullable)
         {
-            isNullable = true;
             _tokens.Advance();
         }
 
-        string type = ParseType();
+        ParseType();
         string name = ParseIdentifier();
-
-        object value = GetDefaultValue(type, isNullable);
+        Expression? value = null;
 
         if (_tokens.Peek().Type == TokenType.Assign)
         {
@@ -84,13 +85,13 @@ public class Parser
         }
 
         Match(TokenType.Semicolon);
-        _symbols[name] = value;
+        return new VariableDeclaration(name, value);
     }
 
     /// <summary>
     /// объявление_константы = "monument", тип, идентификатор, ["=", выражение], ";";
     /// </summary>
-    private void ParseConstantDeclaration()
+    private AstNode ParseConstantDeclaration()
     {
         Match(TokenType.Monument);
 
@@ -103,10 +104,10 @@ public class Parser
         string name = ParseIdentifier();
 
         Match(TokenType.Assign);
-        object value = ParseExpression();
+        Expression value = ParseExpression();
         Match(TokenType.Semicolon);
 
-        _symbols[name] = value;
+        return new ConstantDeclaration(name, value);
     }
 
     /// <summary>
@@ -130,7 +131,8 @@ public class Parser
         while (_tokens.Peek().Type != TokenType.CloseBrace &&
                _tokens.Peek().Type != TokenType.EndOfFile)
         {
-            ParseStatement();
+            AstNode node = ParseStatement();
+            _evaluator.Evaluate(node);
         }
 
         Match(TokenType.CloseBrace);
@@ -140,107 +142,114 @@ public class Parser
     /// инструкция_функции = объявление_переменной | объявление_константы | присваивание | условие |
     /// цикл_while | цикл_for | вызов_функции | вызов_заложенной_функции | возврат;
     /// </summary>
-    private void ParseStatement()
+    private AstNode ParseStatement()
     {
         Token token = _tokens.Peek();
 
         if (token.Type == TokenType.Monument)
         {
-            ParseConstantDeclaration();
+            return ParseConstantDeclaration();
         }
-        else if (IsTypeToken(token.Type) || token.Type == TokenType.Nullable)
+
+        if (IsTypeToken(token.Type) || token.Type == TokenType.Nullable)
         {
-            ParseVariableDeclaration();
+            return ParseVariableDeclaration();
         }
-        else if (token.Type == TokenType.Identifier)
+
+        if (token.Type == TokenType.Identifier)
         {
-            ParseAssignmentOrFunctionCall();
+            return ParseAssignmentOrFunctionCall();
         }
-        else if (token.Type == TokenType.Exodus || token.Type == TokenType.Exodusln)
+
+        if (token.Type == TokenType.Exodus || token.Type == TokenType.Exodusln)
         {
-            ParseOutputStatement();
+            return ParseOutputStatement();
         }
-        else if (token.Type == TokenType.Raid)
+
+        if (token.Type == TokenType.Raid)
         {
-            ParseInputStatement();
+            return ParseInputStatement();
         }
-        else
-        {
-            throw new UnexpectedLexemeException("statement", token);
-        }
+
+        throw new UnexpectedLexemeException("statement", token);
     }
 
-    private void ParseInputStatement()
+    private Expression ParseInputStatement()
     {
         Match(TokenType.Raid);
         Match(TokenType.OpenParenthesis);
 
         string variableName = ParseIdentifier();
 
-        if (!_symbols.ContainsKey(variableName))
-        {
-            throw new Exception($"Undeclared variable: {variableName}");
-        }
-
-        object inputValue = _environment.ReadInput();
-        _symbols[variableName] = inputValue;
-
         Match(TokenType.CloseParenthesis);
         Match(TokenType.Semicolon);
+
+        return new RaidExpression(variableName);
     }
 
-    private void ParseAssignmentOrFunctionCall()
+    private AstNode ParseAssignmentOrFunctionCall()
     {
         string name = ParseIdentifier();
 
         if (_tokens.Peek().Type == TokenType.Assign)
         {
-            ParseAssignment(name);
+            return ParseAssignment(name);
         }
-        else if (_tokens.Peek().Type == TokenType.OpenParenthesis)
+
+        if (_tokens.Peek().Type == TokenType.OpenParenthesis)
         {
-            throw new Exception($"Function calls are not supported yet: {name}");
+            _tokens.Advance();
+
+            List<Expression> arguments = new();
+
+            if (_tokens.Peek().Type != TokenType.CloseParenthesis)
+            {
+                arguments.Add(ParseExpression());
+
+                while (_tokens.Peek().Type == TokenType.Comma)
+                {
+                    _tokens.Advance();
+                    arguments.Add(ParseExpression());
+                }
+            }
+
+            Match(TokenType.CloseParenthesis);
+
+            return new FunctionCall(name, arguments);
         }
-        else
-        {
-            throw new UnexpectedLexemeException("assignment or function call", _tokens.Peek());
-        }
+
+        throw new UnexpectedLexemeException("assignment or function call", _tokens.Peek());
     }
 
-    private void ParseAssignment(string variableName)
+    private AstNode ParseAssignment(string variableName)
     {
         Match(TokenType.Assign);
-        object value = ParseExpression();
+        Expression value = ParseExpression();
         Match(TokenType.Semicolon);
 
-        if (!_symbols.ContainsKey(variableName))
-        {
-            throw new Exception($"Undeclared variable: {variableName}");
-        }
-
-        _symbols[variableName] = value;
+        return new AssignmentExpression(variableName, value);
     }
 
-    private void ParseOutputStatement()
+    private AstNode ParseOutputStatement()
     {
         _tokens.Advance();
         Match(TokenType.OpenParenthesis);
 
-        object value = ParseExpression();
-        double result = Convert.ToDouble(value);
-        _environment.AddResult(result);
+        Expression value = ParseExpression();
 
         Match(TokenType.CloseParenthesis);
         Match(TokenType.Semicolon);
+
+        return new ExodusExpression(value);
     }
 
-    private string ParseType()
+    private void ParseType()
     {
         Token token = _tokens.Peek();
         if (IsTypeToken(token.Type))
         {
             _tokens.Advance();
-            return token.Type.ToString().ToLower();
+            return;
         }
 
         throw new UnexpectedLexemeException("type", token);
@@ -258,23 +267,6 @@ public class Parser
         throw new UnexpectedLexemeException("identifier", token);
     }
 
-    private object GetDefaultValue(string type, bool isNullable)
-    {
-        if (isNullable)
-        {
-            return null!;
-        }
-
-        return type.ToLower() switch
-        {
-            "dayzint" => 0m,
-            "fallout" => 0.0m,
-            "statum" => false,
-            "strike" => "",
-            _ => throw new Exception($"Unknown type: {type}"),
-        };
-    }
-
     private bool IsTypeToken(TokenType type)
     {
         return type == TokenType.Dayzint || type == TokenType.Fallout ||
@@ -285,7 +277,7 @@ public class Parser
     /// Разбирает выражение.
     /// Правила: выражение = логическое_выражение;
     /// </summary>
-    private object ParseExpression()
+    private Expression ParseExpression()
     {
         return ParseLogicalExpression();
     }
@@ -294,7 +286,7 @@ public class Parser
     /// Разбирает логическое выражение.
     /// Правила: логическое_выражение = выражение_сравнения, {логический_оператор, выражение_сравнения};
     /// </summary>
-    private object ParseLogicalExpression()
+    private Expression ParseLogicalExpression()
     {
         return ParseLogicalOrExpression();
     }
@@ -303,19 +295,15 @@ public class Parser
     /// Разбирает логическое ИЛИ выражение.
     /// Правила: логическое_ИЛИ_выражение = логическое_И_выражение, { "||", логическое_И_выражение };
     /// </summary>
-    private object ParseLogicalOrExpression()
+    private Expression ParseLogicalOrExpression()
     {
-        object left = ParseLogicalAndExpression();
+        Expression left = ParseLogicalAndExpression();
 
         while (_tokens.Peek().Type == TokenType.LogicalOr)
         {
             _tokens.Advance();
-
-            object right = ParseLogicalAndExpression();
-
-            bool leftBool = Convert.ToBoolean(left);
-            bool rightBool = Convert.ToBoolean(right);
-            left = leftBool || rightBool;
+            Expression right = ParseLogicalAndExpression();
+            left = new BinaryOperationExpression(left, BinaryOperation.LogicalOr, right);
         }
 
         return left;
@@ -325,19 +313,15 @@ public class Parser
     /// Разбирает логическое И выражение.
     /// Правила: логическое_И_выражение = выражение_сравнения, { "&&", выражение_сравнения };
     /// </summary>
-    private object ParseLogicalAndExpression()
+    private Expression ParseLogicalAndExpression()
     {
-        object left = ParseComparisonExpression();
+        Expression left = ParseComparisonExpression();
 
         while (_tokens.Peek().Type == TokenType.LogicalAnd)
         {
             _tokens.Advance();
-
-            object right = ParseComparisonExpression();
-
-            bool leftBool = Convert.ToBoolean(left);
-            bool rightBool = Convert.ToBoolean(right);
-            left = leftBool && rightBool;
+            Expression right = ParseComparisonExpression();
+            left = new BinaryOperationExpression(left, BinaryOperation.LogicalAnd, right);
         }
 
         return left;
@@ -347,17 +331,28 @@ public class Parser
     /// Разбирает выражение сравнения.
     /// Правила: выражение_сравнения = аддитивное_выражение, [оператор_сравнения, аддитивное_выражение];
     /// </summary>
-    private object ParseComparisonExpression()
+    private Expression ParseComparisonExpression()
     {
-        object left = ParseAdditiveExpression();
+        Expression left = ParseAdditiveExpression();
 
         if (IsComparisonOperator(_tokens.Peek().Type))
         {
             Token operatorToken = _tokens.Peek();
             _tokens.Advance();
+            Expression right = ParseAdditiveExpression();
 
-            object right = ParseAdditiveExpression();
-            left = EvaluateComparison(left, right, operatorToken.Type);
+            BinaryOperation operation = operatorToken.Type switch
+            {
+                TokenType.LessThan => BinaryOperation.LessThan,
+                TokenType.GreaterThan => BinaryOperation.GreaterThan,
+                TokenType.LessThanOrEqual => BinaryOperation.LessThanOrEqual,
+                TokenType.GreaterThanOrEqual => BinaryOperation.GreaterThanOrEqual,
+                TokenType.Equal => BinaryOperation.Equal,
+                TokenType.Unequal => BinaryOperation.NotEqual,
+                _ => throw new Exception($"Unsupported comparison operator: {operatorToken.Type}"),
+            };
+
+            return new BinaryOperationExpression(left, operation, right);
         }
 
         return left;
@@ -367,17 +362,21 @@ public class Parser
     /// Разбирает аддитивное выражение.
     /// Правила: аддитивное_выражение = мультипликативное_выражение, {адитивный_оператор, мультипликативное_выражение};
     /// </summary>
-    private object ParseAdditiveExpression()
+    private Expression ParseAdditiveExpression()
     {
-        object left = ParseMultiplicativeExpression();
+        Expression left = ParseMultiplicativeExpression();
 
         while (_tokens.Peek().Type == TokenType.PlusSign || _tokens.Peek().Type == TokenType.MinusSign)
         {
             Token operatorToken = _tokens.Peek();
             _tokens.Advance();
+            Expression right = ParseMultiplicativeExpression();
 
-            object right = ParseMultiplicativeExpression();
-            left = EvaluateAdditiveOperator(left, right, operatorToken.Type);
+            BinaryOperation operation = operatorToken.Type == TokenType.PlusSign
+                ? BinaryOperation.Plus
+                : BinaryOperation.Minus;
+
+            left = new BinaryOperationExpression(left, operation, right);
         }
 
         return left;
@@ -387,17 +386,25 @@ public class Parser
     /// Разбирает мультипликативное выражение.
     /// Правила: мультипликативное_выражение = унарное_выражение, {мультипликативный_оператор, унарное_выражение};
     /// </summary>
-    private object ParseMultiplicativeExpression()
+    private Expression ParseMultiplicativeExpression()
     {
-        object left = ParseUnaryExpression();
+        Expression left = ParseUnaryExpression();
 
         while (IsMultiplicativeOperator(_tokens.Peek().Type))
         {
             Token operatorToken = _tokens.Peek();
             _tokens.Advance();
+            Expression right = ParseUnaryExpression();
 
-            object right = ParseUnaryExpression();
-            left = EvaluateMultiplicativeOperator(left, right, operatorToken.Type);
+            BinaryOperation operation = operatorToken.Type switch
+            {
+                TokenType.MultiplySign => BinaryOperation.Multiply,
+                TokenType.DivideSign => BinaryOperation.Divide,
+                TokenType.ModuloSign => BinaryOperation.Modulo,
+                _ => throw new Exception($"Unsupported multiplicative operator: {operatorToken.Type}"),
+            };
+
+            left = new BinaryOperationExpression(left, operation, right);
         }
 
         return left;
@@ -407,15 +414,19 @@ public class Parser
     /// Разбирает унарное выражение.
     /// Правила: унарное_выражение = [унарный_оператор], часть_выражения;
     /// </summary>
-    private object ParseUnaryExpression()
+    private Expression ParseUnaryExpression()
     {
         if (_tokens.Peek().Type == TokenType.MinusSign || _tokens.Peek().Type == TokenType.LogicalNot)
         {
             Token operatorToken = _tokens.Peek();
             _tokens.Advance();
+            Expression operand = ParseExpressionPart();
 
-            object operand = ParseExpressionPart();
-            return EvaluateUnaryOperator(operand, operatorToken.Type);
+            UnaryOperation operation = operatorToken.Type == TokenType.MinusSign
+                ? UnaryOperation.Minus
+                : UnaryOperation.LogicalNot;
+
+            return new UnaryOperationExpression(operation, operand);
         }
 
         return ParseExpressionPart();
@@ -425,7 +436,7 @@ public class Parser
     /// Разбирает часть выражения.
     /// Правила: часть_выражения = литерал_выражения | "(", выражение, ")";
     /// </summary>
-    private object ParseExpressionPart()
+    private Expression ParseExpressionPart()
     {
         Token token = _tokens.Peek();
 
@@ -433,30 +444,27 @@ public class Parser
         {
             case TokenType.NumericLiteral:
                 _tokens.Advance();
-                return token.Value!.ToDecimal();
-
-            case TokenType.StringLiteral:
-                _tokens.Advance();
-                return token.Value!.ToString();
+                double numericValue = token.Value!.ToDouble();
+                return new LiteralExpression(numericValue);
 
             case TokenType.Ready:
                 _tokens.Advance();
-                return true;
+                return new LiteralExpression(1.0);
 
             case TokenType.Noready:
                 _tokens.Advance();
-                return false;
+                return new LiteralExpression(0.0);
 
             case TokenType.Ghost:
                 _tokens.Advance();
-                return null!;
+                return new LiteralExpression(0.0);
 
             case TokenType.Identifier:
                 return ParseFunctionCallOrIdentifier();
 
             case TokenType.OpenParenthesis:
                 _tokens.Advance();
-                object result = ParseExpression();
+                Expression result = ParseExpression();
                 Match(TokenType.CloseParenthesis);
                 return result;
 
@@ -465,53 +473,32 @@ public class Parser
         }
     }
 
-    private object ParseFunctionCallOrIdentifier()
+    private Expression ParseFunctionCallOrIdentifier()
     {
-        Token identifierToken = _tokens.Peek();
-        string name = identifierToken.Value?.ToString() ?? throw new InvalidOperationException("Identifier token value is null");
-        _tokens.Advance();
+        string name = ParseIdentifier();
 
         if (_tokens.Peek().Type == TokenType.OpenParenthesis)
         {
             _tokens.Advance();
 
-            List<decimal> arguments = new List<decimal>();
+            List<Expression> arguments = new();
 
             if (_tokens.Peek().Type != TokenType.CloseParenthesis)
             {
-                arguments.Add(Convert.ToDecimal(ParseExpression()));
+                arguments.Add(ParseExpression());
 
                 while (_tokens.Peek().Type == TokenType.Comma)
                 {
-                    _tokens.Advance();
-                    arguments.Add(Convert.ToDecimal(ParseExpression()));
+                    _tokens.Advance(); // Consume ','
+                    arguments.Add(ParseExpression());
                 }
             }
 
             Match(TokenType.CloseParenthesis);
-
-            if (string.IsNullOrEmpty(name))
-            {
-                throw new InvalidOperationException("Function name cannot be null or empty");
-            }
-
-            return BuiltinFunctions.Invoke(name, arguments);
+            return new FunctionCall(name, arguments);
         }
-        else
-        {
-            string variableName = name;
-            if (string.IsNullOrEmpty(variableName))
-            {
-                throw new InvalidOperationException("Variable name cannot be null or empty");
-            }
 
-            if (!_symbols.TryGetValue(variableName, out object? value))
-            {
-                throw new Exception($"Undeclared variable: {variableName}");
-            }
-
-            return value;
-        }
+        return new VariableExpression(name);
     }
 
     private bool IsComparisonOperator(TokenType type)
@@ -525,72 +512,6 @@ public class Parser
     {
         return type == TokenType.MultiplySign || type == TokenType.DivideSign ||
                type == TokenType.ModuloSign;
-    }
-
-    private object EvaluateUnaryOperator(object operand, TokenType operatorType)
-    {
-        return operatorType switch
-        {
-            TokenType.MinusSign => -Convert.ToDecimal(operand),
-            TokenType.LogicalNot => !Convert.ToBoolean(operand),
-            _ => throw new Exception($"Unsupported unary operator: {operatorType}"),
-        };
-    }
-
-    private object EvaluateMultiplicativeOperator(object left, object right, TokenType operatorType)
-    {
-        decimal leftNum = Convert.ToDecimal(left);
-        decimal rightNum = Convert.ToDecimal(right);
-
-        return operatorType switch
-        {
-            TokenType.MultiplySign => leftNum * rightNum,
-            TokenType.DivideSign => rightNum != 0 ? leftNum / rightNum : throw new DivideByZeroException(),
-            TokenType.ModuloSign => rightNum != 0 ? leftNum % rightNum : throw new DivideByZeroException(),
-            _ => throw new Exception($"Unsupported multiplicative operator: {operatorType}"),
-        };
-    }
-
-    private object EvaluateAdditiveOperator(object left, object right, TokenType operatorType)
-    {
-        if (left is string || right is string)
-        {
-            return (left.ToString() ?? "") + (right.ToString() ?? "");
-        }
-
-        if (left.GetType() != right.GetType())
-        {
-            throw new Exception($"Cannot compare different types: {left.GetType().Name} and {right.GetType().Name}");
-        }
-
-        decimal leftNum = Convert.ToDecimal(left);
-        decimal rightNum = Convert.ToDecimal(right);
-
-        return operatorType switch
-        {
-            TokenType.PlusSign => leftNum + rightNum,
-            TokenType.MinusSign => leftNum - rightNum,
-            _ => throw new Exception($"Unsupported additive operator: {operatorType}"),
-        };
-    }
-
-    private object EvaluateComparison(object left, object right, TokenType operatorType)
-    {
-        if (left.GetType() == right.GetType())
-        {
-            return operatorType switch
-            {
-                TokenType.LessThan => Convert.ToDecimal(left) < Convert.ToDecimal(right),
-                TokenType.GreaterThan => Convert.ToDecimal(left) > Convert.ToDecimal(right),
-                TokenType.LessThanOrEqual => Convert.ToDecimal(left) <= Convert.ToDecimal(right),
-                TokenType.GreaterThanOrEqual => Convert.ToDecimal(left) >= Convert.ToDecimal(right),
-                TokenType.Equal => left.Equals(right),
-                TokenType.Unequal => !left.Equals(right),
-                _ => throw new Exception($"Unsupported comparison operator: {operatorType}"),
-            };
-        }
-
-        throw new Exception($"Cannot compare different types: {left.GetType().Name} and {right.GetType().Name}");
     }
 
     private void Match(TokenType expected)

@@ -10,6 +10,7 @@ public class ParseTopLevelStatementsTest
     public void Can_parse_input_output()
     {
         FakeEnvironment fakeEnvironment = new([42]);
+        Context context = new();
 
         string code = @"
         maincraft()
@@ -19,7 +20,7 @@ public class ParseTopLevelStatementsTest
             exodus(x);
         }";
 
-        Parser parser = new(code, fakeEnvironment);
+        Parser parser = new(context, code, fakeEnvironment);
 
         parser.ParseProgram();
 
@@ -31,7 +32,8 @@ public class ParseTopLevelStatementsTest
     public void Can_parse_top_level(string code, object[] expected)
     {
         FakeEnvironment environment = new();
-        Parser parser = new(code, environment);
+        Context context = new();
+        Parser parser = new(context, code, environment);
         parser.ParseProgram();
 
         Assert.Equal(expected.Length, environment.Results.Count);
