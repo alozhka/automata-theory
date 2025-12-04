@@ -1,0 +1,21 @@
+funkotron factorial(dayzint n): dayzint
+{
+    iffy (n < 0) {
+        returnal -1;
+    }
+
+    dayzint factorial = 1;
+    forza (dayzint i = 1; i <= n; i = i + 1) {
+        factorial = factorial * i;
+    }
+
+    returnal factorial;
+}
+
+maincraft()
+{
+    dayzint n;
+    raid(n);
+    
+    exodusln(factorial(n));
+}

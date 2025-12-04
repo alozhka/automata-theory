@@ -1,13 +1,9 @@
-using System;
-
 using Execution;
-
-using Parser;
 
 namespace Interpreter;
 
 /// <summary>
-/// Интерпретатор языка Kaleidoscope
+/// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ Kaleidoscope
 /// </summary>
 public class Interpreter
 {
@@ -19,9 +15,9 @@ public class Interpreter
     }
 
     /// <summary>
-    /// Выполняет программу на языке Kaleidoscope
+    /// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ Kaleidoscope
     /// </summary>
-    /// <param name="sourceCode">Исходный код программы</param>
+    /// <param name="sourceCode">пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ</param>
     public void Execute(string sourceCode)
     {
         if (string.IsNullOrEmpty(sourceCode))
@@ -29,7 +25,6 @@ public class Interpreter
             throw new ArgumentException("Source code cannot be null or empty", nameof(sourceCode));
         }
 
-        // Создаем парсер и выполняем программу
         Parser.Parser parser = new(sourceCode, _environment);
         parser.ParseProgram();
     }
