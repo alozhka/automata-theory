@@ -86,9 +86,6 @@ public class GrammarTests
             // 20. выполнение кода, если условие оказалось ложным elysian
             "maincraft() { iffy (x == 5) { } elysian { } }",
 
-            // 21. условие, если предыдущее оказалось ложным elysiffy
-            "maincraft() { iffy (x == 5) { } elysiffy (x == 10) { } }",
-
             // 22. цикл пока
             "maincraft() { valorant (x < 5) { } }",
 
@@ -288,6 +285,83 @@ public class GrammarTests
                 exodusln(a + b);
             }
             """,
+
+            // GCD
+            """
+            funkotron getGCD(dayzint a, dayzint b): dayzint
+            {
+                a = abs(a);
+                b = abs(b);
+
+                valorant (b != 0) {
+                    dayzint temp = b;
+                    b = a % b;
+                    a = temp;
+                }
+
+                returnal a;
+            }
+
+            maincraft()
+            {
+                dayzint a;
+                dayzint b;
+                
+                raid(a);
+                raid(b);
+                
+                exodusln(getGCD(a, b));
+            }
+            """,
+
+            // Factorial
+            """
+            funkotron factorial(dayzint n): dayzint
+            {
+                iffy (n < 0) {
+                    returnal -1;
+                }
+
+                dayzint factorial = 1;
+                forza (dayzint i = 1; i <= n; i = i + 1) {
+                    factorial = factorial * i;
+                }
+
+                returnal factorial;
+            }
+
+            maincraft()
+            {
+                dayzint n;
+                raid(n);
+                
+                exodusln(factorial(n));
+            }
+            """,
+
+            // sumDigits
+            """
+            funkotron sumDigits(dayzint number): dayzint
+            {
+                monument dayzint RADIX = 10;
+
+                dayzint sum = 0;
+                valorant (number != 0) {
+                    sum = sum + number % RADIX;
+                    number = number // RADIX;
+                }   
+
+                returnal sum;
+            }
+
+            maincraft()
+            {
+                dayzint number;
+                raid(number);
+                
+                exodusln(sumDigits(number));
+            }
+            """,
         };
     }
 
@@ -328,6 +402,7 @@ public class GrammarTests
 
             // 11. Неправильный синтаксис цикла for - отсутствует точка с запятой
             "forza (dayzint i = 0 i < 5; i = i + 1) { }",
+            "valorant () {}",
 
             // 12. Пустое выражение в условии
             "iffy () { }",
@@ -354,6 +429,9 @@ public class GrammarTests
             // 19. Массив с лишней запятой в конце
             "araya<dayzint> arr = {1, 2, 3,};",
             "dayzint result = x  + + y; maincraft() {}",
+
+            // Неправильное указание аргумента
+            "funkotron factorial(n dayzint): dayzint{}",
         };
     }
 }

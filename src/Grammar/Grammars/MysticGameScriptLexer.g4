@@ -18,7 +18,6 @@ GHOST       : 'ghost';
 
 // Управляющие конструкции
 IFFY        : 'iffy';
-ELYSIFFY    : 'elysiffy';
 ELYSIAN     : 'elysian';
 VALORANT    : 'valorant';
 FORZA       : 'forza';

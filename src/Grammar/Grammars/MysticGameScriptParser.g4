@@ -126,14 +126,11 @@ functionBlock: LBRACE statement* RBRACE;
 // если = "iffy", "(", выражение, ")", блок;
 ifStatement: IFFY LPAREN expression RPAREN functionBlock;
 
-// иначе_если = "elysiffy", "(", выражение, ")", блок;
-elseIfStatement: ELYSIFFY LPAREN expression RPAREN functionBlock;
-
 // иначе = "elysian", блок;
 elseStatement: ELYSIAN functionBlock;
 
-// условие = если, {иначе_если}, [иначе];
-conditionalStatement: ifStatement elseIfStatement* elseStatement?;
+// условие = если, [иначе];
+conditionalStatement: ifStatement elseStatement?;
 
 // прерывание_цикла = "breakout", ";" | "contra", ";";
 loopBreak: BREAKOUT SEMICOLON | CONTRA SEMICOLON;
