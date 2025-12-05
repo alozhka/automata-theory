@@ -11,7 +11,7 @@ public class TokenValue
         _value = value;
     }
 
-    public TokenValue(decimal value)
+    public TokenValue(double value)
     {
         _value = value;
     }
@@ -35,12 +35,12 @@ public class TokenValue
     /// <summary>
     ///  ���������� �������� ������ � ���� �����.
     /// </summary>
-    public decimal ToDecimal()
+    public double ToDouble()
     {
         return _value switch
         {
-            string s => decimal.Parse(s, CultureInfo.InvariantCulture),
-            decimal d => d,
+            string s => double.Parse(s, CultureInfo.InvariantCulture),
+            double d => d,
             _ => throw new NotImplementedException(),
         };
     }
@@ -52,12 +52,29 @@ public class TokenValue
     {
         if (obj is TokenValue other)
         {
-            return _value switch
+            if (_value == null && other._value == null)
             {
-                string s => (string)other._value == s,
-                decimal d => (decimal)other._value == d,
-                _ => throw new NotImplementedException(),
-            };
+                return true;
+            }
+
+            if (_value == null || other._value == null)
+            {
+                return false;
+            }
+
+            if (_value is string str1 && other._value is string str2)
+            {
+                return str1 == str2;
+            }
+
+            if (IsNumeric(_value) && IsNumeric(other._value))
+            {
+                double d1 = ToDouble();
+                double d2 = other.ToDouble();
+                return Math.Abs(d1 - d2) < 0.0000001;
+            }
+
+            return _value.Equals(other._value);
         }
 
         return false;
@@ -66,5 +83,10 @@ public class TokenValue
     public override int GetHashCode()
     {
         return _value.GetHashCode();
+    }
+
+    private bool IsNumeric(object value)
+    {
+        return value is int or double or float or decimal;
     }
 }
