@@ -6,5 +6,5 @@ maincraft()
     raid(a);
     raid(b);
     
-    exodusln(a + b);
+    exodus(a + b);
 }

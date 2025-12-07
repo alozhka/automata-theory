@@ -24,5 +24,6 @@ maincraft()
     strike str;
     raid(str);
     
-    exodusln(countVowels(str));
+    exodus(countVowels(str));
+    exodus("\n");
 }

@@ -17,5 +17,5 @@ maincraft()
     dayzint n;
     raid(n);
     
-    exodusln(factorial(n));
+    exodus(factorial(n));
 }

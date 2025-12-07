@@ -16,5 +16,5 @@ maincraft()
     dayzint number;
     raid(number);
     
-    exodusln(sumDigits(number));
+    exodus(sumDigits(number));
 }
