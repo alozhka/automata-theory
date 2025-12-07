@@ -1,0 +1,18 @@
+funkotron getReverseStrike(strike str): strike
+{
+    dayzint strLength = length(str);
+    strike reverseStrike;
+    forza (dayzint i = 0; i < strLength; i = i + 1) {
+        reverseStrike = str_at(str, i) + reverseStrike;
+    }
+
+    returnal reverseStrike;
+}
+
+maincraft()
+{
+    strike str;
+    raid(str);
+    
+    exodusln(getReverseStrike(str));
+}
