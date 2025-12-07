@@ -13,7 +13,7 @@ funkotron countVowels(strike str): dayzint
     dayzint strLength = length(str);
     dayzint countVowels;
     forza (dayzint i = 0; i < strLength; i = i + 1) {
-        countVowels = countVowels + isVowelChar(str_at(i));
+        countVowels = countVowels + isVowelChar(str_at(str, i));
     }
 
     returnal countVowels;
