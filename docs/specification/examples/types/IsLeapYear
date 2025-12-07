@@ -79,13 +79,13 @@ maincraft()
     iffy (checkStrToDayzint(str)) {
         dayzint year = strToDayzint(str);
         iffy (isLeapYear(year)) {
-            exodusln("yes");
+            exodus("yes\n");
         } 
         elysian {
-            exodusln("no");
+            exodus("no\n");
         }
     }
     elysian {
-        exodusln("The entered string is not a year");
+        exodus("The entered string is not a year\n");
     }    
 }

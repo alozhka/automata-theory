@@ -14,5 +14,6 @@ maincraft()
     strike str;
     raid(str);
     
-    exodusln(getReverseStrike(str));
+    exodus(getReverseStrike(str));
+    exodus("\n");
 }
