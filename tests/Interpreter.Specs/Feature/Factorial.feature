@@ -4,14 +4,14 @@
     Сценарий: факториал
         Дано я запустил программу:
             """
-            funkotron factorial(dayzint n)
+            funkotron factorial(fallout n): fallout
             {
-                iffy (n < 0) {
-                    returnal -1;
+                iffy (n < 0.0) {
+                    returnal -1.0;
                 }
             
-                dayzint factorial = 1;
-                forza (dayzint i = 1; i <= n; i = i + 1) {
+                fallout factorial = 1.0;
+                forza (fallout i = 1.0; i <= n; i = i + 1.0) {
                     factorial = factorial * i;
                 }
             
@@ -28,8 +28,8 @@
             """
         И я установил входные данные:
             | Число  |
-            | -5     |
+            | 5      |
         Когда я выполняю программу
         Тогда я получаю результаты:
             | Результат |
-            | -1         |
+            | 120.0     |

@@ -1,5 +1,7 @@
 using Execution;
 
+using Runtime;
+
 using Xunit;
 
 namespace Parser.UnitTests;
@@ -9,7 +11,7 @@ public class ParseTopLevelStatementsTest
     [Fact]
     public void Can_parse_input_output()
     {
-        FakeEnvironment fakeEnvironment = new([42]);
+        FakeEnvironment fakeEnvironment = new([new Value(42)]);
         Context context = new();
 
         string code = @"
@@ -24,7 +26,7 @@ public class ParseTopLevelStatementsTest
 
         parser.ParseProgram();
 
-        Assert.Equal(42.0, fakeEnvironment.Results[0]);
+        Assert.Equal(new Value(42), fakeEnvironment.Results[0]);
     }
 
     [Theory]
@@ -39,7 +41,22 @@ public class ParseTopLevelStatementsTest
         Assert.Equal(expected.Length, environment.Results.Count);
         for (int i = 0; i < expected.Length; i++)
         {
-            Assert.Equal(Convert.ToDouble(expected[i]), environment.Results[i]);
+            Value result = environment.Results[i];
+            double actualValue = result.GetValueType() switch
+            {
+                Runtime.ValueType.Int => result.AsInt(),
+                Runtime.ValueType.Double => result.AsDouble(),
+                _ => throw new InvalidOperationException($"Unexpected value type: {result.GetValueType()}"),
+            };
+            double expectedValue = Convert.ToDouble(expected[i]);
+            if (expected[i] is double or float or decimal)
+            {
+                Assert.Equal(expectedValue, actualValue, 6);
+            }
+            else
+            {
+                Assert.Equal(expectedValue, actualValue);
+            }
         }
     }
 
@@ -101,12 +118,126 @@ public class ParseTopLevelStatementsTest
             },
             {
                 @"
-                monument dayzint x = 66.6;
+                monument fallout x = 66.6;
                 maincraft()
                 {
                     exodus(x);
                 }",
                 [66.6]
+            },
+            {
+                @"
+                maincraft()
+                {
+                    forza (dayzint i = 1; i <= 5; i = i + 1) {
+                        exodus(i);
+                    }
+                }",
+                [1, 2, 3, 4, 5]
+            },
+            {
+                @"
+                maincraft()
+                {
+                    dayzint x = 1;
+                    valorant (x < 5) {
+                        exodus(x);
+                        x = x + 1;
+                    }
+                }",
+                [1, 2, 3, 4]
+            },
+            {
+                @"
+                maincraft()
+                {
+                    dayzint x = 1;
+                    iffy (x < 2) {
+                        exodus(10);
+                    }
+                }",
+                [10]
+            },
+            {
+                @"
+                maincraft()
+                {
+                    dayzint x = 5;
+                    iffy (x < 2) {
+                        exodus(10);
+                    }
+                }",
+                []
+            },
+            {
+                @"
+                maincraft()
+                {
+                    dayzint x = 5;
+                    iffy (x < 2) {
+                        exodus(10);
+                    } elysian {
+                        exodus(5);
+                    }
+                }",
+                [5]
+            },
+            {
+                @"
+                maincraft()
+                {
+                    forza (dayzint i = 1; i <= 5; i = i + 1) {
+                        iffy (i == 3) {
+                            breakout;
+                        }
+                        exodus(i);
+                    }
+                }",
+                [1, 2]
+            },
+            {
+                @"
+                maincraft()
+                {
+                    forza (dayzint i = 1; i <= 5; i = i + 1) {
+                        iffy (i == 3) {
+                            contra;
+                        }
+                        exodus(i);
+                    }
+                }",
+                [1, 2, 4, 5]
+            },
+            {
+                @"
+                maincraft()
+                {
+                    dayzint x = 1;
+                    valorant (x < 5) {
+                        iffy (x == 3) {
+                            breakout;
+                        }
+                        exodus(x);
+                        x = x + 1;
+                    }
+                }",
+                [1, 2]
+            },
+            {
+                @"
+                maincraft()
+                {
+                    dayzint x = 1;
+                    valorant (x < 5) {
+                        iffy (x == 3) {
+                            x = x + 1;
+                            contra;
+                        }
+                        exodus(x);
+                        x = x + 1;
+                    }
+                }",
+                [1, 2, 4]
             },
         };
     }

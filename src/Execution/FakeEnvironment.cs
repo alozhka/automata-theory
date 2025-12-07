@@ -1,3 +1,5 @@
+using Runtime;
+
 namespace Execution;
 
 /// <summary>
@@ -5,10 +7,10 @@ namespace Execution;
 /// </summary>
 public class FakeEnvironment : IEnvironment
 {
-    private readonly List<double> _results = [];
-    private readonly Queue<double> _inputQueue = new();
+    private readonly List<Value> _results = [];
+    private readonly Queue<Value> _inputQueue = new();
 
-    public FakeEnvironment(params double[] inputs)
+    public FakeEnvironment(params Value[] inputs)
     {
         for (int i = inputs.Length - 1; i >= 0; i--)
         {
@@ -16,9 +18,9 @@ public class FakeEnvironment : IEnvironment
         }
     }
 
-    public IReadOnlyList<double> Results => _results;
+    public IReadOnlyList<Value> Results => _results;
 
-    public double ReadInput()
+    public Value ReadInput()
     {
         if (_inputQueue.Count == 0)
         {
@@ -28,7 +30,7 @@ public class FakeEnvironment : IEnvironment
         return _inputQueue.Dequeue();
     }
 
-    public void AddResult(double result)
+    public void AddResult(Value result)
     {
         _results.Add(result);
     }

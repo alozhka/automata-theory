@@ -1,3 +1,5 @@
+using Runtime;
+
 namespace Execution;
 
 public class ConsoleEnvironment : IEnvironment
@@ -5,25 +7,26 @@ public class ConsoleEnvironment : IEnvironment
     /// <summary>
     /// ������ ����� �� ������� (raid)
     /// </summary>
-    public double ReadInput()
+    public Value ReadInput()
     {
         while (true)
         {
             string input = Console.ReadLine()!;
-            if (double.TryParse(input, out double result))
+
+            if (int.TryParse(input, out int intResult))
             {
-                return result;
+                return new Value(intResult);
             }
 
-            Console.WriteLine("Ошибка! Введите корректное число:");
+            return new Value(input);
         }
     }
 
     /// <summary>
     /// ����� ���������� � ������� (exodus/exodusln)
     /// </summary>
-    public void AddResult(double result)
+    public void AddResult(Value result)
     {
-        Console.WriteLine(result);
+        Console.WriteLine(result.ToString());
     }
 }

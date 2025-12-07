@@ -1,5 +1,7 @@
 ﻿using Ast.Declarations;
 
+using Runtime;
+
 namespace Execution;
 
 /// <summary>
@@ -8,7 +10,7 @@ namespace Execution;
 public class Context
 {
     private readonly Stack<Scope> _scopes = [];
-    private readonly Dictionary<string, double> _constants = [];
+    private readonly Dictionary<string, Value> _constants = [];
     private readonly Dictionary<string, FunctionDeclaration> _functions = [];
 
     public Context()
@@ -34,17 +36,17 @@ public class Context
     /// <summary>
     /// Возвращает значение переменной или константы.
     /// </summary>
-    public double GetValue(string name)
+    public Value GetValue(string name)
     {
         foreach (Scope s in _scopes)
         {
-            if (s.TryGetVariable(name, out double variable))
+            if (s.TryGetVariable(name, out Value variable))
             {
                 return variable;
             }
         }
 
-        if (_constants.TryGetValue(name, out double constant))
+        if (_constants.TryGetValue(name, out Value? constant))
         {
             return constant;
         }
@@ -55,7 +57,7 @@ public class Context
     /// <summary>
     /// Присваивает (изменяет) значение переменной.
     /// </summary>
-    public void AssignVariable(string name, double value)
+    public void AssignVariable(string name, Value value)
     {
         foreach (Scope s in _scopes.Reverse())
         {
@@ -71,7 +73,7 @@ public class Context
     /// <summary>
     /// Определяет переменную в текущей области видимости.
     /// </summary>
-    public void DefineVariable(string name, double value)
+    public void DefineVariable(string name, Value value)
     {
         if (!_scopes.Peek().TryDefineVariable(name, value))
         {
@@ -82,7 +84,7 @@ public class Context
     /// <summary>
     /// Определяет константу в глобальной области видимости.
     /// </summary>
-    public void DefineConstant(string name, double value)
+    public void DefineConstant(string name, Value value)
     {
         if (!_constants.TryAdd(name, value))
         {

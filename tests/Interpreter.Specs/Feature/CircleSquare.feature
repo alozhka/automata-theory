@@ -4,11 +4,11 @@
     Сценарий: Площадь круга
         Дано я запустил программу:
             """
-            monument dayzint PI = 3.14;
+            monument fallout PI = 3.14;
             
             maincraft()
             {
-                dayzint radius;
+                fallout radius;
                 raid(radius);
 
                 exodusln(PI * radius * radius);
@@ -16,8 +16,8 @@
             """
         И я установил входные данные:
             | Число |
-            | 10    |
+            | 10.0    |
         Когда я выполняю программу
         Тогда я получаю результаты:
             | Результат |
-            | 314       |
+            | 314.0       |

@@ -6,6 +6,11 @@ public class TokenValue
 {
     private readonly object _value;
 
+    public TokenValue(int value)
+    {
+        _value = value;
+    }
+
     public TokenValue(string value)
     {
         _value = value;
@@ -27,7 +32,8 @@ public class TokenValue
         return _value switch
         {
             string s => s,
-            decimal d => d.ToString(CultureInfo.InvariantCulture),
+            int i => i.ToString(),
+            double d => d.ToString(CultureInfo.InvariantCulture),
             _ => throw new NotImplementedException(),
         };
     }
@@ -40,6 +46,7 @@ public class TokenValue
         return _value switch
         {
             string s => double.Parse(s, CultureInfo.InvariantCulture),
+            int i => i,
             double d => d,
             _ => throw new NotImplementedException(),
         };

@@ -1,10 +1,11 @@
 ﻿using Ast;
 using Ast.Declarations;
 using Ast.Expressions;
-
 using Execution;
-
 using Lexer;
+using Runtime;
+
+using ValueType = Runtime.ValueType;
 
 namespace Parser;
 
@@ -12,6 +13,7 @@ public class Parser
 {
     private readonly TokenStream _tokens;
     private readonly AstEvaluator _evaluator;
+    private ValueType? _currentVariableType;
 
     public Parser(Context context, string code, IEnvironment environment)
     {
@@ -40,7 +42,7 @@ public class Parser
     public Row EvaluateExpression()
     {
         Expression expression = ParseExpression();
-        double result = _evaluator.Evaluate(expression);
+        Value result = _evaluator.Evaluate(expression);
         return new Row(result);
     }
 
@@ -78,28 +80,39 @@ public class Parser
 
         string functionName = ParseIdentifier();
 
-        List<string> parameters = ParseParameterList();
+        List<Parameter> parameters = ParseParameterList();
+
+        ValueType? returnType = null;
+
+        if (_tokens.Peek().Type == TokenType.Colon)
+        {
+            _tokens.Advance();
+
+            returnType = ParseType();
+        }
 
         List<AstNode> nodes = ParseFunctionBlock();
 
-        return new FunctionDeclaration(functionName, parameters, nodes);
+        return new FunctionDeclaration(functionName, parameters, returnType, nodes);
     }
 
-    private List<string> ParseParameterList()
+    private List<Parameter> ParseParameterList()
     {
         Match(TokenType.OpenParenthesis);
-        List<string> parameters = [];
+        List<Parameter> parameters = [];
 
         if (_tokens.Peek().Type != TokenType.CloseParenthesis)
         {
-            ParseType();
-            parameters.Add(ParseIdentifier());
+            ValueType type = ParseType();
+            string name = ParseIdentifier();
+            parameters.Add(new Parameter(name, type));
 
             while (_tokens.Peek().Type == TokenType.Comma)
             {
                 _tokens.Advance();
-                ParseType();
-                parameters.Add(ParseIdentifier());
+                type = ParseType();
+                name = ParseIdentifier();
+                parameters.Add(new Parameter(name, type));
             }
         }
 
@@ -117,7 +130,7 @@ public class Parser
             _tokens.Advance();
         }
 
-        ParseType();
+        _currentVariableType = ParseType();
         string name = ParseIdentifier();
         Expression? value = null;
 
@@ -128,7 +141,7 @@ public class Parser
         }
 
         Match(TokenType.Semicolon);
-        return new VariableDeclaration(name, value);
+        return new VariableDeclaration(name, _currentVariableType.Value, value);
     }
 
     /// <summary>
@@ -143,14 +156,14 @@ public class Parser
             _tokens.Advance();
         }
 
-        ParseType();
+        _currentVariableType = ParseType();
         string name = ParseIdentifier();
 
         Match(TokenType.Assign);
         Expression value = ParseExpression();
         Match(TokenType.Semicolon);
 
-        return new ConstantDeclaration(name, value);
+        return new ConstantDeclaration(name, _currentVariableType.Value, value);
     }
 
     /// <summary>
@@ -299,7 +312,7 @@ public class Parser
             _tokens.Advance();
         }
 
-        ParseType();
+        _currentVariableType = ParseType();
         string iteratorName = ParseIdentifier();
         Match(TokenType.Assign);
         Expression startValue = ParseExpression();
@@ -311,7 +324,7 @@ public class Parser
         string stepVarName = ParseIdentifier();
         Match(TokenType.Assign);
         Expression stepExpression = ParseExpression();
-        Expression stepValue = new AssignmentExpression(stepVarName, stepExpression);
+        Expression stepAssign = new AssignmentExpression(stepVarName, stepExpression);
 
         Match(TokenType.CloseParenthesis);
 
@@ -327,7 +340,7 @@ public class Parser
 
         Match(TokenType.CloseBrace);
 
-        return new ForLoopExpression(iteratorName, startValue, endCondition, stepValue, body);
+        return new ForLoopExpression(_currentVariableType.Value, iteratorName, startValue, endCondition, stepAssign, body);
     }
 
     private AstNode ParseValorantStatement()
@@ -463,13 +476,19 @@ public class Parser
         return new ExodusExpression(value);
     }
 
-    private void ParseType()
+    private ValueType ParseType()
     {
         Token token = _tokens.Peek();
         if (IsTypeToken(token.Type))
         {
             _tokens.Advance();
-            return;
+            switch (token.Type)
+            {
+                case TokenType.Dayzint: return ValueType.Int;
+                case TokenType.Fallout: return ValueType.Double;
+                case TokenType.Strike: return ValueType.String;
+                default: throw new UnexpectedLexemeException("type", token);
+            }
         }
 
         throw new UnexpectedLexemeException("type", token);
@@ -489,8 +508,7 @@ public class Parser
 
     private bool IsTypeToken(TokenType type)
     {
-        return type == TokenType.Dayzint || type == TokenType.Fallout ||
-               type == TokenType.Statum || type == TokenType.Strike;
+        return type == TokenType.Dayzint || type == TokenType.Fallout || type == TokenType.Strike;
     }
 
     /// <summary>
@@ -664,23 +682,53 @@ public class Parser
         {
             case TokenType.NumericLiteral:
                 _tokens.Advance();
-                double numericValue = token.Value!.ToDouble();
+                double doubleValue = token.Value!.ToDouble();
+                Value numericValue;
+                if (_currentVariableType.HasValue)
+                {
+                    numericValue = _currentVariableType.Value switch
+                    {
+                        ValueType.Int => new Value((int)doubleValue),
+                        _ => new Value(doubleValue),
+                    };
+                }
+                else
+                {
+                    string numericStr = token.Value.ToString();
+
+                    if (numericStr.Contains('.') || numericStr.Contains(','))
+                    {
+                        numericValue = new Value(doubleValue);
+                    }
+                    else
+                    {
+                        if (Math.Abs(doubleValue % 1) < 0.0000001)
+                        {
+                            numericValue = new Value((int)doubleValue);
+                        }
+                        else
+                        {
+                            numericValue = new Value(doubleValue);
+                        }
+                    }
+                }
+
                 return new LiteralExpression(numericValue);
 
             case TokenType.Ready:
                 _tokens.Advance();
-                return new LiteralExpression(1.0);
+                return new LiteralExpression(new Value(1));
 
             case TokenType.Noready:
                 _tokens.Advance();
-                return new LiteralExpression(0.0);
-
-            case TokenType.Ghost:
-                _tokens.Advance();
-                return new LiteralExpression(0.0);
+                return new LiteralExpression(new Value(0));
 
             case TokenType.Identifier:
                 return ParseFunctionCallOrIdentifier();
+            case TokenType.StringLiteral:
+                _tokens.Advance();
+                string strValue = token.Value!.ToString();
+                return new LiteralExpression(new Value(strValue));
 
             case TokenType.OpenParenthesis:
                 _tokens.Advance();

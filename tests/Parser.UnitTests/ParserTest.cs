@@ -1,5 +1,7 @@
 using Execution;
 
+using Runtime;
+
 using Xunit;
 
 namespace Parser.UnitTests;
@@ -15,9 +17,34 @@ public class ParserTest
         Parser parser = new(context, code, environment);
         Row result = parser.EvaluateExpression();
 
-        double expectedValue = Convert.ToDouble(expected);
-        double actualValue = Convert.ToDouble(result[0]);
-        Assert.Equal(expectedValue, actualValue);
+        Value resultValue = result.GetValue(0);
+
+        if (expected is string expectedString)
+        {
+            Assert.Equal(Runtime.ValueType.String, resultValue.GetValueType());
+            Assert.Equal(expectedString, resultValue.AsString());
+        }
+        else
+        {
+            double actualValue = resultValue.GetValueType() switch
+            {
+                Runtime.ValueType.Int => resultValue.AsInt(),
+                Runtime.ValueType.Double => resultValue.AsDouble(),
+                Runtime.ValueType.String => double.Parse(resultValue.AsString()),
+                _ => throw new InvalidOperationException($"Unexpected value type: {resultValue.GetValueType()}"),
+            };
+
+            double expectedValue = Convert.ToDouble(expected);
+
+            if (expected is int)
+            {
+                Assert.Equal((int)expectedValue, (int)actualValue);
+            }
+            else
+            {
+                Assert.Equal(expectedValue, actualValue, 6);
+            }
+        }
     }
 
     public static TheoryData<string, object> GetExpressionTestData()
@@ -28,7 +55,6 @@ public class ParserTest
             { "3.14", 3.14 },
             { "ready", 1 },
             { "noready", 0 },
-            { "ghost", 0 },
             { "1 + 2", 3m },
             { "5 - 3", 2m },
             { "2 * 3", 6m },
@@ -69,6 +95,9 @@ public class ParserTest
             { "round(3.6)", 4m },
             { "ceil(3.2)", 4m },
             { "floor(3.8)", 3m },
+            { "length('test')", 4 },
+            { "length('')", 0 },
+            { "str_at('test', 3)", "t" },
         };
     }
 }

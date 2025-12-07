@@ -1,3 +1,5 @@
+using Runtime;
+
 namespace Parser;
 
 public class Row
@@ -12,4 +14,18 @@ public class Row
     public int ColumnCount => _values.Length;
 
     public object this[int index] => _values[index];
+
+    public Value GetValue(int index)
+    {
+        object obj = _values[index];
+
+        return obj switch
+        {
+            Value v => v,
+            string s => new Value(s),
+            int i => new Value(i),
+            double d => new Value(d),
+            _ => throw new InvalidOperationException($"Cannot convert {obj.GetType()} to Value"),
+        };
+    }
 }
