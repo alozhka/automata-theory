@@ -1,4 +1,6 @@
-﻿namespace Execution;
+﻿using Runtime;
+
+namespace Execution;
 
 /// <summary>
 /// ������������ ��������� ��� ���������� ���������.
@@ -9,7 +11,7 @@ public interface IEnvironment
     /// <summary>
     /// ���������� ����� ���������� ���������� ��������� ���������� ���������.
     /// </summary>
-    public void AddResult(double result);
+    public void AddResult(Value result);
 
-    public double ReadInput();
+    public Value ReadInput();
 }

@@ -5,5 +5,5 @@ maincraft()
     fallout radius;
     raid(radius);
     
-    exodusln(PI * radius * radius);
+    exodus(PI * radius * radius);
 }

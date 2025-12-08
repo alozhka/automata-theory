@@ -20,5 +20,5 @@ maincraft()
     raid(a);
     raid(b);
     
-    exodusln(getGCD(a, b));
+    exodus(getGCD(a, b));
 }

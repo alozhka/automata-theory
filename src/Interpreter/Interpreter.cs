@@ -25,7 +25,8 @@ public class Interpreter
             throw new ArgumentException("Source code cannot be null or empty", nameof(sourceCode));
         }
 
-        Parser.Parser parser = new(sourceCode, _environment);
+        Context context = new();
+        Parser.Parser parser = new(context, sourceCode, _environment);
         parser.ParseProgram();
     }
 }

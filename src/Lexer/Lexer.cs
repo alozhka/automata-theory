@@ -198,7 +198,7 @@ public class Lexer
 
     private Token ParseNumericLiteral()
     {
-        decimal value = GetDigitValue(_scanner.Peek());
+        double value = GetDigitValue(_scanner.Peek());
         _scanner.Advance();
 
         for (char c = _scanner.Peek(); char.IsAsciiDigit(c); c = _scanner.Peek())
@@ -210,12 +210,12 @@ public class Lexer
         if (_scanner.Peek() == '.')
         {
             _scanner.Advance();
-            decimal factor = 0.1m;
+            double factor = 0.1;
             for (char c = _scanner.Peek(); char.IsAsciiDigit(c); c = _scanner.Peek())
             {
                 _scanner.Advance();
                 value += factor * GetDigitValue(c);
-                factor *= 0.1m;
+                factor *= 0.1;
             }
         }
 
