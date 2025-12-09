@@ -42,4 +42,6 @@ public interface IAstVisitor
     public void Visit(ReturnExpression e);
 
     public void Visit(WhileLoopExpression e);
+
+    public void Visit(ParameterDeclaration d);
 }

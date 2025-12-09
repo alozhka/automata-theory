@@ -1,22 +1,30 @@
-﻿using ValueType = Runtime.ValueType;
+﻿using Ast.Attributes;
 
 namespace Ast.Declarations;
 
-public class FunctionDeclaration : AstNode
+public sealed class FunctionDeclaration : AbstractFunctionDeclaration
 {
-    public FunctionDeclaration(string name, List<Parameter> parameters, ValueType? returnType, List<AstNode> body)
+    private AstAttribute<AbstractTypeDeclaration?> _declaredType;
+
+    public FunctionDeclaration(
+        string name,
+        IReadOnlyList<ParameterDeclaration> parameters,
+        string? declaredTypeName,
+        List<AstNode> body
+    )
+        : base(name, parameters)
     {
-        Name = name;
-        Parameters = parameters;
-        ReturnType = returnType;
+        DeclaredTypeName = declaredTypeName;
         Body = body;
     }
 
-    public string Name { get; }
+    public AbstractTypeDeclaration? DeclaredType
+    {
+        get => _declaredType.Get();
+        set => _declaredType.Set(value);
+    }
 
-    public ValueType? ReturnType { get; }
-
-    public List<Parameter> Parameters { get; }
+    public string? DeclaredTypeName { get; }
 
     public List<AstNode> Body { get; }
 

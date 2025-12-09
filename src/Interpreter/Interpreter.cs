@@ -1,4 +1,8 @@
+using Ast;
+
 using Execution;
+
+using Semantics;
 
 namespace Interpreter;
 
@@ -7,10 +11,12 @@ namespace Interpreter;
 /// </summary>
 public class Interpreter
 {
+    private readonly Builtins _builtins;
     private readonly IEnvironment _environment;
 
     public Interpreter(IEnvironment environment)
     {
+        _builtins = new Builtins();
         _environment = environment;
     }
 
@@ -26,7 +32,16 @@ public class Interpreter
         }
 
         Context context = new();
-        Parser.Parser parser = new(context, sourceCode, _environment);
-        parser.ParseProgram();
+        Parser.Parser parser = new(sourceCode);
+        List<AstNode> nodes = parser.ParseProgram();
+
+        SemanticsChecker checker = new(_builtins.Functions, _builtins.Types);
+        checker.Check(nodes);
+
+        AstEvaluator evaluator = new(context, _environment);
+        foreach (AstNode node in nodes)
+        {
+            evaluator.Evaluate(node);
+        }
     }
 }

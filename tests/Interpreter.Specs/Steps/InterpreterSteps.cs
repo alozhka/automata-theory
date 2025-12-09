@@ -16,14 +16,12 @@ public class InterpreterSteps
     private const int Precision = 5;
     private static readonly double Tolerance = Math.Pow(0.1, Precision);
 
-    private Context? _context;
     private FakeEnvironment? _environment;
     private string? _currentProgram;
 
     [Given(@"я запустил программу:")]
     public void GivenЯЗапустилПрограмму(string program)
     {
-        _context = new Context();
         _environment = new FakeEnvironment();
         _currentProgram = program;
     }
@@ -59,13 +57,14 @@ public class InterpreterSteps
     [When(@"я выполняю программу")]
     public void WhenЯВыполняюПрограмму()
     {
-        if (_context == null || _environment == null || _currentProgram == null)
+        if (_environment == null || _currentProgram == null)
         {
             throw new InvalidOperationException("Сначала нужно запустить программу и установить входные данные");
         }
 
-        Parser.Parser parser = new(_context, _currentProgram, _environment);
-        parser.ParseProgram();
+        Interpreter interpreter = new(_environment);
+
+        interpreter.Execute(_currentProgram);
     }
 
     [Then(@"я получаю результаты:")]
