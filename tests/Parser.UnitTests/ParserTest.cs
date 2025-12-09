@@ -1,3 +1,5 @@
+using Ast.Expressions;
+
 using Execution;
 
 using Runtime;
@@ -14,9 +16,11 @@ public class ParserTest
     {
         FakeEnvironment environment = new();
         Context context = new();
-        Parser parser = new(context, code, environment);
-        Row result = parser.EvaluateExpression();
+        AstEvaluator evaluator = new(context, environment);
+        Parser parser = new(code);
+        Expression expression = parser.EvaluateExpression();
 
+        Row result = new(evaluator.Evaluate(expression));
         Value resultValue = result.GetValue(0);
 
         if (expected is string expectedString)

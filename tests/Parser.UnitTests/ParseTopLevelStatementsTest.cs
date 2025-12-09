@@ -1,6 +1,11 @@
+using Ast;
+
 using Execution;
 
 using Runtime;
+
+using Semantics;
+using Semantics.Exceptions;
 
 using Xunit;
 
@@ -11,6 +16,7 @@ public class ParseTopLevelStatementsTest
     [Fact]
     public void Can_parse_input_output()
     {
+        Builtins builtins = new();
         FakeEnvironment fakeEnvironment = new([new Value(42)]);
         Context context = new();
 
@@ -22,9 +28,16 @@ public class ParseTopLevelStatementsTest
             exodus(x);
         }";
 
-        Parser parser = new(context, code, fakeEnvironment);
+        Parser parser = new(code);
 
-        parser.ParseProgram();
+        List<AstNode> nodes = parser.ParseProgram();
+        SemanticsChecker checker = new(builtins.Functions, builtins.Types);
+        checker.Check(nodes);
+        AstEvaluator evaluator = new(context, fakeEnvironment);
+        foreach (AstNode node in nodes)
+        {
+            evaluator.Evaluate(node);
+        }
 
         Assert.Equal(new Value(42), fakeEnvironment.Results[0]);
     }
@@ -33,10 +46,18 @@ public class ParseTopLevelStatementsTest
     [MemberData(nameof(GetExpressionTopLevelTestData))]
     public void Can_parse_top_level(string code, object[] expected)
     {
+        Builtins builtins = new();
         FakeEnvironment environment = new();
         Context context = new();
-        Parser parser = new(context, code, environment);
-        parser.ParseProgram();
+        Parser parser = new(code);
+        List<AstNode> nodes = parser.ParseProgram();
+        SemanticsChecker checker = new(builtins.Functions, builtins.Types);
+        checker.Check(nodes);
+        AstEvaluator evaluator = new(context, environment);
+        foreach (AstNode node in nodes)
+        {
+            evaluator.Evaluate(node);
+        }
 
         Assert.Equal(expected.Length, environment.Results.Count);
         for (int i = 0; i < expected.Length; i++)
@@ -58,6 +79,284 @@ public class ParseTopLevelStatementsTest
                 Assert.Equal(expectedValue, actualValue);
             }
         }
+    }
+
+    [Theory]
+    [MemberData(nameof(GetSemanticViolationsData))]
+    public void Rejects_code_with_semantic_violations(string code, Type expectedExceptionType)
+    {
+        Builtins builtins = new();
+        Parser parser = new(code);
+        List<AstNode> nodes = parser.ParseProgram();
+        SemanticsChecker checker = new(builtins.Functions, builtins.Types);
+
+        Assert.Throws(expectedExceptionType, () => checker.Check(nodes));
+    }
+
+    public static TheoryData<string, Type> GetSemanticViolationsData()
+    {
+        return new TheoryData<string, Type>
+        {
+            {
+                """
+                maincraft()
+                {
+                    fallout radius;
+                    fallout radius;
+                }
+                """,
+                typeof(DuplicateSymbolException)
+            },
+            {
+                """
+                maincraft()
+                {
+                    fallout radius = 5.0;
+                    monument fallout radius = 3.0;
+                }
+                """,
+                typeof(DuplicateSymbolException)
+            },
+            {
+                """
+                maincraft()
+                {
+                    monument fallout radius = 3.0;
+                    fallout radius = 5.0;
+                }
+                """,
+                typeof(DuplicateSymbolException)
+            },
+            {
+                """
+                maincraft()
+                {
+                    raid(n);
+                }
+                """,
+                typeof(UnknownSymbolException)
+            },
+            {
+                """
+                maincraft()
+                {
+                    exodus(n);
+                }
+                """,
+                typeof(UnknownSymbolException)
+            },
+            {
+                """
+                maincraft()
+                {
+                    iffy(n < 0) {
+                        exodus(1);
+                    }
+                }
+                """,
+                typeof(UnknownSymbolException)
+            },
+            {
+                """
+                maincraft()
+                {
+                    iffy(n < 0) {
+                        exodus(1);
+                    } elysian {
+                        exodus(0);
+                    }
+                }
+                """,
+                typeof(UnknownSymbolException)
+            },
+            {
+                """
+                maincraft()
+                {
+                    returnal n;
+                }
+                """,
+                typeof(UnknownSymbolException)
+            },
+            {
+                """
+                maincraft()
+                {
+                    monument fallout radius = 3.0;
+                    radius = 5.0;
+                }
+                """,
+                typeof(InvalidAssignmentException)
+            },
+            {
+                """
+                funkotron factorial(fallout n)
+                {
+                }
+                
+                maincraft()
+                {
+                    factorial();
+                }
+                """,
+                typeof(InvalidFunctionCallException)
+            },
+            {
+                """
+                funkotron factorial()
+                {
+                    breakout;
+                }
+
+                maincraft()
+                {
+                    factorial();
+                }
+                """,
+                typeof(InvalidExpressionException)
+            },
+            {
+                """
+                funkotron factorial()
+                {
+                    contra;
+                }
+
+                maincraft()
+                {
+                    factorial();
+                }
+                """,
+                typeof(InvalidExpressionException)
+            },
+            {
+                """
+                maincraft()
+                {
+                    exodus(1 + 'hello');
+                }
+                """,
+                typeof(TypeErrorException)
+            },
+            {
+                """
+                maincraft()
+                {
+                    exodus('a' - 'b');
+                }
+                """,
+                typeof(TypeErrorException)
+            },
+            {
+                """
+                maincraft()
+                {
+                    exodus('text' * 2);
+                }
+                """,
+                typeof(TypeErrorException)
+            },
+            {
+                """
+                maincraft()
+                {
+                    exodus('text' / 2);
+                }
+                """,
+                typeof(TypeErrorException)
+            },
+            {
+                """
+                maincraft()
+                {
+                    exodus('a' < 1);
+                }
+                """,
+                typeof(TypeErrorException)
+            },
+            {
+                """
+                maincraft()
+                {
+                    exodus('a' > 1);
+                }
+                """,
+                typeof(TypeErrorException)
+            },
+            {
+                """
+                maincraft()
+                {
+                    exodus(3.14 == 'pi');
+                }
+                """,
+                typeof(TypeErrorException)
+            },
+            {
+                """
+                maincraft()
+                {
+                    exodus(-'hello');
+                }
+                """,
+                typeof(TypeErrorException)
+            },
+            {
+                """
+                maincraft()
+                {
+                    dayzint x = 'text';
+                }
+                """,
+                typeof(TypeErrorException)
+            },
+            {
+                """
+                maincraft()
+                {
+                    strike s = 42;
+                }
+                """,
+                typeof(TypeErrorException)
+            },
+            {
+                """
+                maincraft()
+                {
+                    fallout f = 'text';
+                }
+                """,
+                typeof(TypeErrorException)
+            },
+            {
+                """
+                maincraft()
+                {
+                    exodus(floor('text'));
+                }
+                """,
+                typeof(TypeErrorException)
+            },
+            {
+                """
+                maincraft()
+                {
+                    exodus(str_at(123, 0));
+                }
+                """,
+                typeof(TypeErrorException)
+            },
+            {
+                """
+                maincraft()
+                {
+                    dayzint x = 5;
+                    x = 'text';
+                }
+                """,
+                typeof(TypeErrorException)
+            },
+        };
     }
 
     public static TheoryData<string, object[]> GetExpressionTopLevelTestData()
@@ -94,7 +393,7 @@ public class ParseTopLevelStatementsTest
                 @"
                 maincraft()
                 {
-                    exodus(min(10, 3, 15));
+                    exodus(min(10, 3));
                 }",
                 [3]
             },
@@ -103,7 +402,7 @@ public class ParseTopLevelStatementsTest
                 maincraft()
                 {
                     dayzint x = 1;
-                    exodus(min(x, 3, 15));
+                    exodus(min(x, 3));
                 }",
                 [1]
             },

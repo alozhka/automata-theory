@@ -1,7 +1,6 @@
 ﻿using Ast;
 using Ast.Declarations;
 using Ast.Expressions;
-using Execution;
 using Lexer;
 using Runtime;
 
@@ -12,38 +11,38 @@ namespace Parser;
 public class Parser
 {
     private readonly TokenStream _tokens;
-    private readonly AstEvaluator _evaluator;
     private ValueType? _currentVariableType;
 
-    public Parser(Context context, string code, IEnvironment environment)
+    public Parser(string code)
     {
         _tokens = new TokenStream(code);
-        _evaluator = new AstEvaluator(context, environment);
     }
 
     /// <summary>
     /// программа = {глобальная_инструкция}, точка_входа;
     /// </summary>
-    public void ParseProgram()
+    public List<AstNode> ParseProgram()
     {
+        List<AstNode> nodes = new();
         while (_tokens.Peek().Type != TokenType.EndOfFile &&
                _tokens.Peek().Type != TokenType.Maincraft)
         {
             AstNode nodeGlobalDeclaration = ParseGlobalDeclaration();
-            _evaluator.Evaluate(nodeGlobalDeclaration);
+            nodes.Add(nodeGlobalDeclaration);
         }
 
-        ParseMaincraft();
+        List<AstNode> maincraftNodes = ParseMaincraft();
+        nodes.AddRange(maincraftNodes);
+
+        return nodes;
     }
 
     /// <summary>
     /// Выполняет разбор выражения и возвращает результат.
     /// </summary>
-    public Row EvaluateExpression()
+    public Expression EvaluateExpression()
     {
-        Expression expression = ParseExpression();
-        Value result = _evaluator.Evaluate(expression);
-        return new Row(result);
+        return ParseExpression();
     }
 
     /// <summary>
@@ -80,39 +79,57 @@ public class Parser
 
         string functionName = ParseIdentifier();
 
-        List<Parameter> parameters = ParseParameterList();
+        List<ParameterDeclaration> parameters = ParseParameterList();
 
-        ValueType? returnType = null;
+        string? returnTypeName = null;
 
         if (_tokens.Peek().Type == TokenType.Colon)
         {
             _tokens.Advance();
 
-            returnType = ParseType();
+            returnTypeName = ParseTypeName();
         }
 
         List<AstNode> nodes = ParseFunctionBlock();
 
-        return new FunctionDeclaration(functionName, parameters, returnType, nodes);
+        return new FunctionDeclaration(functionName, parameters, returnTypeName, nodes);
     }
 
-    private List<Parameter> ParseParameterList()
+    private string ParseTypeName()
+    {
+        Token token = _tokens.Peek();
+        if (IsTypeToken(token.Type))
+        {
+            _tokens.Advance();
+            return token.Type switch
+            {
+                TokenType.Dayzint => "dayzint",
+                TokenType.Fallout => "fallout",
+                TokenType.Strike => "strike",
+                _ => throw new UnexpectedLexemeException("type", token),
+            };
+        }
+
+        throw new UnexpectedLexemeException("type", token);
+    }
+
+    private List<ParameterDeclaration> ParseParameterList()
     {
         Match(TokenType.OpenParenthesis);
-        List<Parameter> parameters = [];
+        List<ParameterDeclaration> parameters = [];
 
         if (_tokens.Peek().Type != TokenType.CloseParenthesis)
         {
-            ValueType type = ParseType();
+            string typeName = ParseTypeName();
             string name = ParseIdentifier();
-            parameters.Add(new Parameter(name, type));
+            parameters.Add(new ParameterDeclaration(name, typeName));
 
             while (_tokens.Peek().Type == TokenType.Comma)
             {
                 _tokens.Advance();
-                type = ParseType();
+                typeName = ParseTypeName();
                 name = ParseIdentifier();
-                parameters.Add(new Parameter(name, type));
+                parameters.Add(new ParameterDeclaration(name, typeName));
             }
         }
 
@@ -130,7 +147,9 @@ public class Parser
             _tokens.Advance();
         }
 
-        _currentVariableType = ParseType();
+        string typeName = ParseTypeName();
+        _currentVariableType = ConvertTypeNameToValueType(typeName);
+
         string name = ParseIdentifier();
         Expression? value = null;
 
@@ -141,7 +160,21 @@ public class Parser
         }
 
         Match(TokenType.Semicolon);
-        return new VariableDeclaration(name, _currentVariableType.Value, value);
+
+        _currentVariableType = null;
+
+        return new VariableDeclaration(name, typeName, value);
+    }
+
+    private ValueType ConvertTypeNameToValueType(string typeName)
+    {
+        return typeName.ToLower() switch
+        {
+            "dayzint" => ValueType.Int,
+            "fallout" => ValueType.Double,
+            "strike" => ValueType.String,
+            _ => throw new Exception($"Unknown type: {typeName}"),
+        };
     }
 
     /// <summary>
@@ -156,25 +189,29 @@ public class Parser
             _tokens.Advance();
         }
 
-        _currentVariableType = ParseType();
+        string typeName = ParseTypeName();
+        _currentVariableType = ConvertTypeNameToValueType(typeName);
+
         string name = ParseIdentifier();
 
         Match(TokenType.Assign);
         Expression value = ParseExpression();
         Match(TokenType.Semicolon);
 
-        return new ConstantDeclaration(name, _currentVariableType.Value, value);
+        _currentVariableType = null;
+
+        return new ConstantDeclaration(name, typeName, value);
     }
 
     /// <summary>
     /// точка_входа = "maincraft", "(", ")", блок_функции;
     /// </summary>
-    private void ParseMaincraft()
+    private List<AstNode> ParseMaincraft()
     {
         Match(TokenType.Maincraft);
         Match(TokenType.OpenParenthesis);
         Match(TokenType.CloseParenthesis);
-        ParseBlock();
+        return ParseBlock();
     }
 
     private List<AstNode> ParseFunctionBlock()
@@ -197,18 +234,21 @@ public class Parser
     /// <summary>
     /// блок_функции = "{", {инструкция_функции}, "}";
     /// </summary>
-    private void ParseBlock()
+    private List<AstNode> ParseBlock()
     {
+        List<AstNode> nodes = new();
         Match(TokenType.OpenBrace);
 
         while (_tokens.Peek().Type != TokenType.CloseBrace &&
                _tokens.Peek().Type != TokenType.EndOfFile)
         {
             AstNode node = ParseStatement();
-            _evaluator.Evaluate(node);
+            nodes.Add(node);
         }
 
         Match(TokenType.CloseBrace);
+
+        return nodes;
     }
 
     /// <summary>
@@ -312,10 +352,14 @@ public class Parser
             _tokens.Advance();
         }
 
-        _currentVariableType = ParseType();
+        string typeName = ParseTypeName();
+        _currentVariableType = ConvertTypeNameToValueType(typeName);
+
         string iteratorName = ParseIdentifier();
         Match(TokenType.Assign);
         Expression startValue = ParseExpression();
+
+        _currentVariableType = null;
         Match(TokenType.Semicolon);
 
         Expression endCondition = ParseExpression();
@@ -340,7 +384,7 @@ public class Parser
 
         Match(TokenType.CloseBrace);
 
-        return new ForLoopExpression(_currentVariableType.Value, iteratorName, startValue, endCondition, stepAssign, body);
+        return new ForLoopExpression(typeName, iteratorName, startValue, endCondition, stepAssign, body);
     }
 
     private AstNode ParseValorantStatement()
@@ -474,24 +518,6 @@ public class Parser
         Match(TokenType.Semicolon);
 
         return new ExodusExpression(value);
-    }
-
-    private ValueType ParseType()
-    {
-        Token token = _tokens.Peek();
-        if (IsTypeToken(token.Type))
-        {
-            _tokens.Advance();
-            switch (token.Type)
-            {
-                case TokenType.Dayzint: return ValueType.Int;
-                case TokenType.Fallout: return ValueType.Double;
-                case TokenType.Strike: return ValueType.String;
-                default: throw new UnexpectedLexemeException("type", token);
-            }
-        }
-
-        throw new UnexpectedLexemeException("type", token);
     }
 
     private string ParseIdentifier()
@@ -727,7 +753,7 @@ public class Parser
                 return ParseFunctionCallOrIdentifier();
             case TokenType.StringLiteral:
                 _tokens.Advance();
-                string strValue = token.Value!.ToString();
+                string strValue = token.Value?.ToString() ?? "";
                 return new LiteralExpression(new Value(strValue));
 
             case TokenType.OpenParenthesis:

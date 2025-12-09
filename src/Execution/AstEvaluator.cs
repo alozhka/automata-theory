@@ -42,6 +42,10 @@ public class AstEvaluator(Context context, IEnvironment environment) : IAstVisit
         };
     }
 
+    public void Visit(ParameterDeclaration d)
+    {
+    }
+
     public void Visit(ForLoopExpression e)
     {
         context.PushScope(new Scope());
@@ -512,13 +516,20 @@ public class AstEvaluator(Context context, IEnvironment environment) : IAstVisit
         }
         else
         {
-            value = d.Type switch
+            if (d.ResultType == default)
             {
-                ValueType.Int => new Value(0),
-                ValueType.Double => new Value(0.0),
-                ValueType.String => new Value(""),
-                _ => Value.Void,
-            };
+                value = new Value(0);
+            }
+            else
+            {
+                value = d.ResultType switch
+                {
+                    ValueType.Int => new Value(0),
+                    ValueType.Double => new Value(0.0),
+                    ValueType.String => new Value(""),
+                    _ => Value.Void,
+                };
+            }
         }
 
         context.DefineVariable(d.Name, value);
@@ -559,8 +570,6 @@ public class AstEvaluator(Context context, IEnvironment environment) : IAstVisit
 
     public void Visit(FunctionCall call)
     {
-        int stackDepthBeforeArgs = _values.Count;
-
         List<Value> argValues = new();
         foreach (Expression arg in call.Arguments)
         {
@@ -632,7 +641,7 @@ public class AstEvaluator(Context context, IEnvironment environment) : IAstVisit
             for (int i = 0; i < argValues.Count; i++)
             {
                 Value argValue = argValues[i];
-                ValueType paramType = function.Parameters[i].Type;
+                ValueType paramType = function.Parameters[i].ResultType;
 
                 if (argValue.GetValueType() != paramType)
                 {
@@ -680,16 +689,16 @@ public class AstEvaluator(Context context, IEnvironment environment) : IAstVisit
                 }
                 catch (ReturnException ret)
                 {
-                    if (function.ReturnType.HasValue)
+                    if (function.DeclaredType != null)
                     {
                         if (ret.ReturnValue.Equals(Value.Void))
                         {
                             throw new InvalidOperationException(
-                                $"Function '{function.Name}' expects return value of type {function.ReturnType.Value}, but got void");
+                                $"Function '{function.Name}' expects return value of type {function.DeclaredType.ResultType}, but got void");
                         }
 
                         ValueType returnValueType = ret.ReturnValue.GetValueType();
-                        ValueType expectedType = function.ReturnType.Value;
+                        ValueType expectedType = function.DeclaredType.ResultType;
 
                         if (returnValueType != expectedType)
                         {

@@ -1,21 +1,28 @@
-﻿using Ast.Expressions;
+﻿using Ast.Attributes;
+using Ast.Expressions;
 
 namespace Ast.Declarations;
 
-public sealed class VariableDeclaration : Declaration
+public sealed class VariableDeclaration : AbstractVariableDeclaration
 {
-    public VariableDeclaration(string name, Runtime.ValueType type, Expression? value)
-    {
-        Name = name;
-        Value = value;
-        Type = type;
-    }
+    private AstAttribute<AbstractTypeDeclaration?> _declaredType;
 
-    public string Name { get; }
+    public VariableDeclaration(string name, string declaredTypeName, Expression? value)
+        : base(name)
+    {
+        Value = value;
+        DeclaredTypeName = declaredTypeName;
+    }
 
     public Expression? Value { get; }
 
-    public Runtime.ValueType Type { get; }
+    public string DeclaredTypeName { get; }
+
+    public AbstractTypeDeclaration? DeclaredType
+    {
+        get => _declaredType.Get();
+        set => _declaredType.Set(value);
+    }
 
     public override void Accept(IAstVisitor visitor)
     {

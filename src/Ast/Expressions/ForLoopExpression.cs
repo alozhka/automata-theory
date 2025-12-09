@@ -3,7 +3,7 @@
 public sealed class ForLoopExpression : Expression
 {
     public ForLoopExpression(
-        Runtime.ValueType iteratorType,
+        string typeName,
         string iteratorName,
         Expression startValue,
         Expression endCondition,
@@ -11,7 +11,7 @@ public sealed class ForLoopExpression : Expression
         List<AstNode> body
     )
     {
-        IteratorType = iteratorType;
+        TypeName = typeName;
         IteratorName = iteratorName;
         StartValue = startValue;
         EndCondition = endCondition;
@@ -19,7 +19,7 @@ public sealed class ForLoopExpression : Expression
         Body = body;
     }
 
-    public Runtime.ValueType IteratorType { get; }
+    public string TypeName { get; }
 
     public string IteratorName { get; }
 
