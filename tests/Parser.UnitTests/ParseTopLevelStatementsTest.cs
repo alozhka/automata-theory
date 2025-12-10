@@ -356,6 +356,68 @@ public class ParseTopLevelStatementsTest
                 """,
                 typeof(TypeErrorException)
             },
+            {
+                """
+                funkotron factorial(): dayzint
+                {
+                    strike s;
+                    returnal s;
+                }
+
+                maincraft()
+                {
+                    factorial();
+                }
+                """,
+                typeof(TypeErrorException)
+            },
+            {
+                """
+                funkotron factorial(): dayzint
+                {
+                    strike s;
+                    iffy (1 < 5) {
+                        returnal s;
+                    }
+                }
+
+                maincraft()
+                {
+                    factorial();
+                }
+                """,
+                typeof(TypeErrorException)
+            },
+            {
+                """
+                funkotron factorial(): dayzint
+                {
+                }
+
+                maincraft()
+                {
+                    factorial();
+                }
+                """,
+                typeof(TypeErrorException)
+            },
+            {
+                """
+                funkotron factorial(): dayzint
+                {
+                    iffy (5 < 0)
+                    {
+                        returnal 0;
+                    }
+                }
+
+                maincraft()
+                {
+                    factorial();
+                }
+                """,
+                typeof(TypeErrorException)
+            },
         };
     }
 
