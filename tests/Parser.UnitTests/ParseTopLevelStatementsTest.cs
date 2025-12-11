@@ -63,20 +63,42 @@ public class ParseTopLevelStatementsTest
         for (int i = 0; i < expected.Length; i++)
         {
             Value result = environment.Results[i];
-            double actualValue = result.GetValueType() switch
+
+            switch (expected[i])
             {
-                Runtime.ValueType.Int => result.AsInt(),
-                Runtime.ValueType.Double => result.AsDouble(),
-                _ => throw new InvalidOperationException($"Unexpected value type: {result.GetValueType()}"),
-            };
-            double expectedValue = Convert.ToDouble(expected[i]);
-            if (expected[i] is double or float or decimal)
-            {
-                Assert.Equal(expectedValue, actualValue, 6);
-            }
-            else
-            {
-                Assert.Equal(expectedValue, actualValue);
+                case int expectedInt:
+                    if (result.GetValueType() == Runtime.ValueType.Int)
+                    {
+                        Assert.Equal(expectedInt, result.AsInt());
+                    }
+                    else if (result.GetValueType() == Runtime.ValueType.Double)
+                    {
+                        double doubleValue = result.AsDouble();
+                        Assert.True(Math.Abs(doubleValue - expectedInt) < 0.000001, $"Expected integer {expectedInt} but got double {doubleValue}");
+                        Assert.Equal(expectedInt, doubleValue, 6);
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException($"Expected int but got {result.GetValueType()}");
+                    }
+
+                    break;
+
+                case double:
+                case float:
+                case decimal:
+                    Assert.Equal(Runtime.ValueType.Double, result.GetValueType());
+                    double expectedValue = Convert.ToDouble(expected[i]);
+                    Assert.Equal(expectedValue, result.AsDouble(), 6);
+                    break;
+
+                case string expectedString:
+                    Assert.Equal(Runtime.ValueType.String, result.GetValueType());
+                    Assert.Equal(expectedString, result.AsString());
+                    break;
+
+                default:
+                    throw new InvalidOperationException($"Unexpected expected type: {expected[i].GetType()}");
             }
         }
     }
@@ -599,6 +621,85 @@ public class ParseTopLevelStatementsTest
                     }
                 }",
                 [1, 2, 4]
+            },
+            {
+                @"
+                maincraft()
+                {
+                    strike s;
+                    exodus(s);
+                }",
+                [""]
+            },
+            {
+                @"
+                maincraft()
+                {
+                    strike s = 'hello';
+                    exodus(s);
+                }",
+                ["hello"]
+            },
+            {
+                @"
+                maincraft()
+                {
+                    strike s = 'hello';
+                    strike w = 'world';
+                    exodus(s + w);
+                }",
+                ["helloworld"]
+            },
+            {
+                @"
+                maincraft()
+                {
+                    strike s = 'hello';
+                    strike w = 'world';
+                    iffy (s < w) {
+                        exodus(s);
+                    } elysian {
+                        exodus(w);
+                    }
+                }",
+                ["hello"]
+            },
+            {
+                @"
+                maincraft()
+                {
+                    fallout s;
+                    exodus(s);
+                }",
+                [0.0]
+            },
+            {
+                @"
+                maincraft()
+                {
+                    fallout s = 1.5;
+                    exodus(s);
+                }",
+                [1.5]
+            },
+            {
+                @"
+                maincraft()
+                {
+                    fallout s = 1.5;
+                    dayzint d = 1;
+                    exodus(s + d);
+                }",
+                [2.5]
+            },
+            {
+                @"
+                maincraft()
+                {
+                    dayzint d = 1.666;
+                    exodus(d);
+                }",
+                [1]
             },
         };
     }
