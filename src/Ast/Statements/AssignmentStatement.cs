@@ -1,18 +1,22 @@
 ﻿using Ast.Attributes;
 using Ast.Declarations;
+using Ast.Expressions;
 
-namespace Ast.Expressions;
+namespace Ast.Statements;
 
-public sealed class RaidExpression : Expression
+public sealed class AssignmentStatement : Expression
 {
     private AstAttribute<AbstractVariableDeclaration> _variable;
 
-    public RaidExpression(string name)
+    public AssignmentStatement(string name, Expression value)
     {
         Name = name;
+        Value = value;
     }
 
     public string Name { get; }
+
+    public Expression Value { get; }
 
     public AbstractVariableDeclaration Variable
     {

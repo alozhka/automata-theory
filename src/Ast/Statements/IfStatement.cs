@@ -1,8 +1,10 @@
-﻿namespace Ast.Expressions;
+﻿using Ast.Expressions;
 
-public sealed class IfExpression : Expression
+namespace Ast.Statements;
+
+public sealed class IfStatement : Expression
 {
-    public IfExpression(Expression condition, List<AstNode> thenBranch)
+    public IfStatement(Expression condition, List<AstNode> thenBranch)
     {
         Condition = condition;
         ThenBranch = thenBranch;

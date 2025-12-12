@@ -1,5 +1,6 @@
 ﻿using Ast.Declarations;
 using Ast.Expressions;
+using Ast.Statements;
 using Semantics.Exceptions;
 
 namespace Semantics.Passes;
@@ -57,7 +58,7 @@ public sealed class CheckContextSensitiveRulesPass : AbstractPass
         }
     }
 
-    public override void Visit(WhileLoopExpression e)
+    public override void Visit(WhileLoopStatement e)
     {
         _expressionContextStack.Push(ExpressionContext.InsideLoop);
         try
@@ -70,7 +71,7 @@ public sealed class CheckContextSensitiveRulesPass : AbstractPass
         }
     }
 
-    public override void Visit(ForLoopExpression e)
+    public override void Visit(ForLoopStatement e)
     {
         _expressionContextStack.Push(ExpressionContext.InsideLoop);
         try
@@ -83,7 +84,7 @@ public sealed class CheckContextSensitiveRulesPass : AbstractPass
         }
     }
 
-    public override void Visit(BreakExpression e)
+    public override void Visit(BreakStatement e)
     {
         base.Visit(e);
 
@@ -93,7 +94,7 @@ public sealed class CheckContextSensitiveRulesPass : AbstractPass
         }
     }
 
-    public override void Visit(ContinueExpression e)
+    public override void Visit(ContinueStatement e)
     {
         base.Visit(e);
 

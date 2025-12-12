@@ -1,8 +1,10 @@
-﻿namespace Ast.Expressions;
+﻿using Ast.Expressions;
 
-public sealed class WhileLoopExpression : Expression
+namespace Ast.Statements;
+
+public sealed class WhileLoopStatement : Expression
 {
-    public WhileLoopExpression(Expression condition, List<AstNode> thenBranch)
+    public WhileLoopStatement(Expression condition, List<AstNode> thenBranch)
     {
         Condition = condition;
         ThenBranch = thenBranch;

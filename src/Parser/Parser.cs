@@ -1,6 +1,7 @@
 ﻿using Ast;
 using Ast.Declarations;
 using Ast.Expressions;
+using Ast.Statements;
 using Lexer;
 using Runtime;
 
@@ -321,14 +322,14 @@ public class Parser
     {
         Match(TokenType.Breakout);
         Match(TokenType.Semicolon);
-        return new BreakExpression();
+        return new BreakStatement();
     }
 
     private AstNode ParseContraStatement()
     {
         Match(TokenType.Contra);
         Match(TokenType.Semicolon);
-        return new ContinueExpression();
+        return new ContinueStatement();
     }
 
     private AstNode ParseReturnStatement()
@@ -339,7 +340,7 @@ public class Parser
 
         Match(TokenType.Semicolon);
 
-        return new ReturnExpression(returnValue);
+        return new ReturnStatement(returnValue);
     }
 
     private AstNode ParseForzaStatement()
@@ -368,7 +369,7 @@ public class Parser
         string stepVarName = ParseIdentifier();
         Match(TokenType.Assign);
         Expression stepExpression = ParseExpression();
-        Expression stepAssign = new AssignmentExpression(stepVarName, stepExpression);
+        Expression stepAssign = new AssignmentStatement(stepVarName, stepExpression);
 
         Match(TokenType.CloseParenthesis);
 
@@ -384,7 +385,7 @@ public class Parser
 
         Match(TokenType.CloseBrace);
 
-        return new ForLoopExpression(typeName, iteratorName, startValue, endCondition, stepAssign, body);
+        return new ForLoopStatement(typeName, iteratorName, startValue, endCondition, stepAssign, body);
     }
 
     private AstNode ParseValorantStatement()
@@ -407,7 +408,7 @@ public class Parser
 
         Match(TokenType.CloseBrace);
 
-        return new WhileLoopExpression(condition, thenBranch);
+        return new WhileLoopStatement(condition, thenBranch);
     }
 
     private AstNode ParseIffyStatement()
@@ -444,10 +445,10 @@ public class Parser
 
             Match(TokenType.CloseBrace);
 
-            return new IfElseExpression(condition, thenBranch, elseBranch);
+            return new IfElseStatement(condition, thenBranch, elseBranch);
         }
 
-        return new IfExpression(condition, thenBranch);
+        return new IfStatement(condition, thenBranch);
     }
 
     private Expression ParseInputStatement()
@@ -460,7 +461,7 @@ public class Parser
         Match(TokenType.CloseParenthesis);
         Match(TokenType.Semicolon);
 
-        return new RaidExpression(variableName);
+        return new RaidStatement(variableName);
     }
 
     private AstNode ParseAssignmentOrFunctionCall()
@@ -504,7 +505,7 @@ public class Parser
         Expression value = ParseExpression();
         Match(TokenType.Semicolon);
 
-        return new AssignmentExpression(variableName, value);
+        return new AssignmentStatement(variableName, value);
     }
 
     private AstNode ParseOutputStatement()
@@ -517,7 +518,7 @@ public class Parser
         Match(TokenType.CloseParenthesis);
         Match(TokenType.Semicolon);
 
-        return new ExodusExpression(value);
+        return new ExodusStatement(value);
     }
 
     private string ParseIdentifier()

@@ -1,6 +1,7 @@
 ﻿using Ast;
 using Ast.Declarations;
 using Ast.Expressions;
+using Ast.Statements;
 using Execution.Exceptions;
 using Lexer;
 using Runtime;
@@ -46,7 +47,7 @@ public class AstEvaluator(Context context, IEnvironment environment) : IAstVisit
     {
     }
 
-    public void Visit(ForLoopExpression e)
+    public void Visit(ForLoopStatement e)
     {
         context.PushScope(new Scope());
         try
@@ -479,7 +480,7 @@ public class AstEvaluator(Context context, IEnvironment environment) : IAstVisit
         _values.Push(context.GetValue(e.Name));
     }
 
-    public void Visit(AssignmentExpression e)
+    public void Visit(AssignmentStatement e)
     {
         e.Value.Accept(this);
         Value value = _values.Pop();
@@ -552,7 +553,7 @@ public class AstEvaluator(Context context, IEnvironment environment) : IAstVisit
         _values.Push(Value.Void);
     }
 
-    public void Visit(ExodusExpression e)
+    public void Visit(ExodusStatement e)
     {
         e.Value.Accept(this);
         Value value = _values.Pop();
@@ -560,7 +561,7 @@ public class AstEvaluator(Context context, IEnvironment environment) : IAstVisit
         _values.Push(Value.Void);
     }
 
-    public void Visit(RaidExpression e)
+    public void Visit(RaidStatement e)
     {
         Value value = environment.ReadInput();
 
@@ -679,7 +680,7 @@ public class AstEvaluator(Context context, IEnvironment environment) : IAstVisit
                     {
                         statement.Accept(this);
 
-                        if (_values.Count > stackDepthBeforeBody && !(statement is ReturnExpression))
+                        if (_values.Count > stackDepthBeforeBody && !(statement is ReturnStatement))
                         {
                             _values.Pop();
                         }
@@ -748,7 +749,7 @@ public class AstEvaluator(Context context, IEnvironment environment) : IAstVisit
         }
     }
 
-    public void Visit(IfExpression e)
+    public void Visit(IfStatement e)
     {
         e.Condition.Accept(this);
 
@@ -765,7 +766,7 @@ public class AstEvaluator(Context context, IEnvironment environment) : IAstVisit
             foreach (AstNode statement in e.ThenBranch)
             {
                 statement.Accept(this);
-                if (_values.Count > 0 && !(statement is ReturnExpression))
+                if (_values.Count > 0 && !(statement is ReturnStatement))
                 {
                     _values.Pop();
                 }
@@ -773,7 +774,7 @@ public class AstEvaluator(Context context, IEnvironment environment) : IAstVisit
         }
     }
 
-    public void Visit(WhileLoopExpression e)
+    public void Visit(WhileLoopStatement e)
     {
         context.PushScope(new Scope());
         bool isNotBreaked = true;
@@ -800,7 +801,7 @@ public class AstEvaluator(Context context, IEnvironment environment) : IAstVisit
                     {
                         statement.Accept(this);
 
-                        if (_values.Count > 0 && !(statement is ReturnExpression))
+                        if (_values.Count > 0 && !(statement is ReturnStatement))
                         {
                             _values.Pop();
                         }
@@ -825,24 +826,24 @@ public class AstEvaluator(Context context, IEnvironment environment) : IAstVisit
         }
     }
 
-    public void Visit(ReturnExpression e)
+    public void Visit(ReturnStatement e)
     {
         e.Value.Accept(this);
         Value returnValue = _values.Pop();
         throw new ReturnException(returnValue);
     }
 
-    public void Visit(ContinueExpression e)
+    public void Visit(ContinueStatement e)
     {
         throw new ContinueException();
     }
 
-    public void Visit(BreakExpression e)
+    public void Visit(BreakStatement e)
     {
         throw new BreakException();
     }
 
-    public void Visit(IfElseExpression e)
+    public void Visit(IfElseStatement e)
     {
         e.Condition.Accept(this);
 
@@ -859,7 +860,7 @@ public class AstEvaluator(Context context, IEnvironment environment) : IAstVisit
             foreach (AstNode statement in e.ThenBranch)
             {
                 statement.Accept(this);
-                if (_values.Count > 0 && !(statement is ReturnExpression))
+                if (_values.Count > 0 && !(statement is ReturnStatement))
                 {
                     _values.Pop();
                 }
@@ -870,7 +871,7 @@ public class AstEvaluator(Context context, IEnvironment environment) : IAstVisit
             foreach (AstNode statement in e.ElseBranch)
             {
                 statement.Accept(this);
-                if (_values.Count > 0 && !(statement is ReturnExpression))
+                if (_values.Count > 0 && !(statement is ReturnStatement))
                 {
                     _values.Pop();
                 }

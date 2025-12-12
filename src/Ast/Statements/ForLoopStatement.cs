@@ -1,8 +1,10 @@
-﻿namespace Ast.Expressions;
+﻿using Ast.Expressions;
 
-public sealed class ForLoopExpression : Expression
+namespace Ast.Statements;
+
+public sealed class ForLoopStatement : Expression
 {
-    public ForLoopExpression(
+    public ForLoopStatement(
         string typeName,
         string iteratorName,
         Expression startValue,

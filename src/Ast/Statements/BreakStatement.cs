@@ -1,6 +1,8 @@
-﻿namespace Ast.Expressions;
+﻿using Ast.Expressions;
 
-public class BreakExpression : Expression
+namespace Ast.Statements;
+
+public class BreakStatement : Expression
 {
     public override void Accept(IAstVisitor visitor)
     {

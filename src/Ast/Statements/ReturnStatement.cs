@@ -1,8 +1,10 @@
-﻿namespace Ast.Expressions;
+﻿using Ast.Expressions;
 
-public sealed class ExodusExpression : Expression
+namespace Ast.Statements;
+
+public class ReturnStatement : Expression
 {
-    public ExodusExpression(Expression value)
+    public ReturnStatement(Expression value)
     {
         Value = value;
     }

@@ -1,5 +1,6 @@
 ﻿using Ast.Declarations;
 using Ast.Expressions;
+using Ast.Statements;
 
 namespace Ast;
 
@@ -13,19 +14,19 @@ public interface IAstVisitor
 
     public void Visit(VariableExpression e);
 
-    public void Visit(AssignmentExpression e);
+    public void Visit(AssignmentStatement e);
 
-    public void Visit(ContinueExpression e);
+    public void Visit(ContinueStatement e);
 
-    public void Visit(BreakExpression e);
+    public void Visit(BreakStatement e);
 
     public void Visit(VariableScopeExpression e);
 
-    public void Visit(IfElseExpression e);
+    public void Visit(IfElseStatement e);
 
-    public void Visit(IfExpression e);
+    public void Visit(IfStatement e);
 
-    public void Visit(ForLoopExpression e);
+    public void Visit(ForLoopStatement e);
 
     public void Visit(VariableDeclaration d);
 
@@ -33,15 +34,15 @@ public interface IAstVisitor
 
     public void Visit(FunctionDeclaration d);
 
-    public void Visit(ExodusExpression e);
+    public void Visit(ExodusStatement e);
 
-    public void Visit(RaidExpression e);
+    public void Visit(RaidStatement e);
 
     public void Visit(FunctionCall e);
 
-    public void Visit(ReturnExpression e);
+    public void Visit(ReturnStatement e);
 
-    public void Visit(WhileLoopExpression e);
+    public void Visit(WhileLoopStatement e);
 
     public void Visit(ParameterDeclaration d);
 }

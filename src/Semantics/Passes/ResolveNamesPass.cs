@@ -1,5 +1,6 @@
 ﻿using Ast.Declarations;
 using Ast.Expressions;
+using Ast.Statements;
 using Semantics.Exceptions;
 using Semantics.Symbols;
 
@@ -20,14 +21,14 @@ public sealed class ResolveNamesPass : AbstractPass
         _symbols = globalSymbols;
     }
 
-    public override void Visit(RaidExpression e)
+    public override void Visit(RaidStatement e)
     {
         base.Visit(e);
 
         e.Variable = ResolveVariable(e.Name);
     }
 
-    public override void Visit(AssignmentExpression e)
+    public override void Visit(AssignmentStatement e)
     {
         base.Visit(e);
 
@@ -87,7 +88,7 @@ public sealed class ResolveNamesPass : AbstractPass
         _symbols.DefineSymbol(d.Name, d);
     }
 
-    public override void Visit(ForLoopExpression e)
+    public override void Visit(ForLoopStatement e)
     {
         _symbols = new SymbolsTable(_symbols);
         try

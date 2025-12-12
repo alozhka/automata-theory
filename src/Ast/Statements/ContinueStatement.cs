@@ -1,6 +1,8 @@
-﻿namespace Ast.Expressions;
+﻿using Ast.Expressions;
 
-public class ContinueExpression : Expression
+namespace Ast.Statements;
+
+public class ContinueStatement : Expression
 {
     public override void Accept(IAstVisitor visitor)
     {

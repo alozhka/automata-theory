@@ -1,6 +1,7 @@
 ﻿using Ast;
 using Ast.Declarations;
 using Ast.Expressions;
+using Ast.Statements;
 
 namespace Semantics.Passes;
 
@@ -22,11 +23,11 @@ public abstract class AbstractPass : IAstVisitor
     {
     }
 
-    public virtual void Visit(ContinueExpression e)
+    public virtual void Visit(ContinueStatement e)
     {
     }
 
-    public virtual void Visit(BreakExpression e)
+    public virtual void Visit(BreakStatement e)
     {
     }
 
@@ -40,7 +41,7 @@ public abstract class AbstractPass : IAstVisitor
         e.Expression.Accept(this);
     }
 
-    public virtual void Visit(IfExpression e)
+    public virtual void Visit(IfStatement e)
     {
         e.Condition.Accept(this);
 
@@ -50,7 +51,7 @@ public abstract class AbstractPass : IAstVisitor
         }
     }
 
-    public virtual void Visit(ReturnExpression e)
+    public virtual void Visit(ReturnStatement e)
     {
         e.Value.Accept(this);
     }
@@ -60,11 +61,11 @@ public abstract class AbstractPass : IAstVisitor
         d.Value.Accept(this);
     }
 
-    public virtual void Visit(RaidExpression e)
+    public virtual void Visit(RaidStatement e)
     {
     }
 
-    public virtual void Visit(ExodusExpression e)
+    public virtual void Visit(ExodusStatement e)
     {
         e.Value.Accept(this);
     }
@@ -83,12 +84,12 @@ public abstract class AbstractPass : IAstVisitor
         }
     }
 
-    public virtual void Visit(AssignmentExpression e)
+    public virtual void Visit(AssignmentStatement e)
     {
         e.Value.Accept(this);
     }
 
-    public virtual void Visit(IfElseExpression e)
+    public virtual void Visit(IfElseStatement e)
     {
         e.Condition.Accept(this);
 
@@ -103,7 +104,7 @@ public abstract class AbstractPass : IAstVisitor
         }
     }
 
-    public virtual void Visit(WhileLoopExpression e)
+    public virtual void Visit(WhileLoopStatement e)
     {
         e.Condition.Accept(this);
         foreach (AstNode node in e.ThenBranch)
@@ -112,7 +113,7 @@ public abstract class AbstractPass : IAstVisitor
         }
     }
 
-    public virtual void Visit(ForLoopExpression e)
+    public virtual void Visit(ForLoopStatement e)
     {
         e.StartValue.Accept(this);
         e.EndCondition.Accept(this);

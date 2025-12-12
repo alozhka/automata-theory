@@ -1,6 +1,7 @@
 ﻿using Ast;
 using Ast.Declarations;
 using Ast.Expressions;
+using Ast.Statements;
 using Semantics.Exceptions;
 
 using ValueType = Runtime.ValueType;
@@ -106,7 +107,7 @@ public sealed class ResolveTypesPass : AbstractPass
         }
     }
 
-    public override void Visit(AssignmentExpression e)
+    public override void Visit(AssignmentStatement e)
     {
         base.Visit(e);
 
@@ -124,7 +125,7 @@ public sealed class ResolveTypesPass : AbstractPass
         e.ResultType = ValueType.Void;
     }
 
-    public override void Visit(IfElseExpression e)
+    public override void Visit(IfElseStatement e)
     {
         base.Visit(e);
 
@@ -170,7 +171,7 @@ public sealed class ResolveTypesPass : AbstractPass
         _expectedReturnType = null;
     }
 
-    public override void Visit(ReturnExpression e)
+    public override void Visit(ReturnStatement e)
     {
         e.Value.Accept(this);
 
@@ -307,12 +308,12 @@ public sealed class ResolveTypesPass : AbstractPass
     {
         foreach (AstNode node in block)
         {
-            if (node is ReturnExpression)
+            if (node is ReturnStatement)
             {
                 return true;
             }
 
-            if (node is IfElseExpression ifElse)
+            if (node is IfElseStatement ifElse)
             {
                 bool thenHasReturn = HasGuaranteedReturnInBlock(ifElse.ThenBranch);
                 bool elseHasReturn = HasGuaranteedReturnInBlock(ifElse.ElseBranch);
