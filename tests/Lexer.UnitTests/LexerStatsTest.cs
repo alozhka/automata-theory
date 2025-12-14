@@ -43,20 +43,20 @@ public class LexerStatsTest
                     raid(length);
                     
                     iffy (length <= 0) {
-                        exodusln("Invalid length");
+                        exodus("Invalid length");
                         returnal;
                     }
                     
-                    exodusln("Fibonacci sequence:");
+                    exodus("Fibonacci sequence:");
                     forza (dayzint i = 0; i < length; i = i + 1) {
                         exodus(fibonacci(i) + " ");
                     }
-                    exodusln("");
+                    exodus("");
                 }
                 """,
                 """
-                keywords: 19
-                identifier: 19
+                keywords: 18
+                identifier: 20
                 number literals: 6
                 string literals: 5
                 operators: 10
@@ -75,19 +75,19 @@ public class LexerStatsTest
                     
                     fallout eurAmount = convertCurrency(usdAmount, exchangeRate);
                     
-                    exodusln("Currency Converter");
-                    exodusln("USD: " + usdAmount);
-                    exodusln("Exchange Rate: " + exchangeRate);
-                    exodusln("EUR: " + eurAmount);
+                    exodus("Currency Converter");
+                    exodus("USD: " + usdAmount);
+                    exodus("Exchange Rate: " + exchangeRate);
+                    exodus("EUR: " + eurAmount);
                     
                     iffy (usdAmount < 0 || exchangeRate <= 0) {
-                        exodusln("Invalid input");
+                        exodus("Invalid input");
                         returnal;
                     }
                 }
                 """,
-                @"keywords: 17
-identifier: 17
+                @"keywords: 16
+identifier: 18
 number literals: 4
 string literals: 5
 operators: 10

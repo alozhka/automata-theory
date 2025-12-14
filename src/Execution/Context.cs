@@ -59,7 +59,7 @@ public class Context
     /// </summary>
     public void AssignVariable(string name, Value value)
     {
-        foreach (Scope s in _scopes.Reverse())
+        foreach (Scope s in _scopes)
         {
             if (s.TryAssignVariable(name, value))
             {

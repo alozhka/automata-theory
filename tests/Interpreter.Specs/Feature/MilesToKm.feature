@@ -11,7 +11,7 @@
                     fallout miles;
                     raid(miles);
     
-                    exodusln(miles * MILES_PER_KM);
+                    exodus(miles * MILES_PER_KM);
                 }
             """
         И я установил входные данные:

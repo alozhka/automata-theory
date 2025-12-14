@@ -23,10 +23,10 @@ public class ConsoleEnvironment : IEnvironment
     }
 
     /// <summary>
-    /// ����� ���������� � ������� (exodus/exodusln)
+    /// ����� ���������� � ������� (exodus)
     /// </summary>
     public void AddResult(Value result)
     {
-        Console.WriteLine(result.ToString());
+        Console.Write(result.ToString());
     }
 }

@@ -11,15 +11,9 @@ public class Lexer
     {
         { "DAYZINT", TokenType.Dayzint },
         { "FALLOUT", TokenType.Fallout },
-        { "STATUM", TokenType.Statum },
         { "STRIKE", TokenType.Strike },
-        { "ARAYA", TokenType.Araya },
-        { "GHOST", TokenType.Ghost },
-        { "READY", TokenType.Ready },
-        { "NOREADY", TokenType.Noready },
         { "IFFY", TokenType.Iffy },
         { "ELYSIAN", TokenType.Elysian },
-        { "ELYSIFFY", TokenType.Elysiffy },
         { "VALORANT", TokenType.Valorant },
         { "FORZA", TokenType.Forza },
         { "BREAKOUT", TokenType.Breakout },
@@ -28,16 +22,15 @@ public class Lexer
         { "RETURNAL", TokenType.Returnal },
         { "RAID", TokenType.Raid },
         { "EXODUS", TokenType.Exodus },
-        { "EXODUSLN", TokenType.Exodusln },
         { "MAINCRAFT", TokenType.Maincraft },
         { "MONUMENT", TokenType.Monument },
     };
 
     private readonly TextScanner _scanner;
 
-    public Lexer(string sql)
+    public Lexer(string code)
     {
-        _scanner = new TextScanner(sql);
+        _scanner = new TextScanner(code);
     }
 
     /// <summary>
@@ -73,9 +66,6 @@ public class Lexer
 
         switch (c)
         {
-            case '?':
-                _scanner.Advance();
-                return new Token(TokenType.Nullable);
             case ';':
                 _scanner.Advance();
                 return new Token(TokenType.Semicolon);
@@ -109,9 +99,6 @@ public class Lexer
             case '%':
                 _scanner.Advance();
                 return new Token(TokenType.ModuloSign);
-            case '^':
-                _scanner.Advance();
-                return new Token(TokenType.ExponentiationSign);
             case '!':
                 _scanner.Advance();
                 if (_scanner.Peek() == '=')
@@ -147,7 +134,6 @@ public class Lexer
                     return new Token(TokenType.LogicalOr);
                 }
 
-                _scanner.Advance();
                 return new Token(TokenType.Error, new TokenValue(c.ToString()));
             case '&':
                 _scanner.Advance();
@@ -157,7 +143,6 @@ public class Lexer
                     return new Token(TokenType.LogicalAnd);
                 }
 
-                _scanner.Advance();
                 return new Token(TokenType.Error, new TokenValue(c.ToString()));
             case '(':
                 _scanner.Advance();

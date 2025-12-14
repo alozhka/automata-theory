@@ -22,14 +22,6 @@ public class LexerTest
                 ]
             },
             {
-                "?dayzint x;", [
-                    new Token(TokenType.Nullable),
-                    new Token(TokenType.Dayzint),
-                    new Token(TokenType.Identifier, new TokenValue("x")),
-                    new Token(TokenType.Semicolon),
-                ]
-            },
-            {
                 "dayzint x = 5;", [
                     new Token(TokenType.Dayzint),
                     new Token(TokenType.Identifier, new TokenValue("x")),
@@ -46,43 +38,11 @@ public class LexerTest
                 ]
             },
             {
-                "?fallout x;", [
-                    new Token(TokenType.Nullable),
-                    new Token(TokenType.Fallout),
-                    new Token(TokenType.Identifier, new TokenValue("x")),
-                    new Token(TokenType.Semicolon),
-                ]
-            },
-            {
                 "fallout x = 5;", [
                     new Token(TokenType.Fallout),
                     new Token(TokenType.Identifier, new TokenValue("x")),
                     new Token(TokenType.Assign),
                     new Token(TokenType.NumericLiteral, new TokenValue(5)),
-                    new Token(TokenType.Semicolon),
-                ]
-            },
-            {
-                "statum x;", [
-                    new Token(TokenType.Statum),
-                    new Token(TokenType.Identifier, new TokenValue("x")),
-                    new Token(TokenType.Semicolon),
-                ]
-            },
-            {
-                "?statum x;", [
-                    new Token(TokenType.Nullable),
-                    new Token(TokenType.Statum),
-                    new Token(TokenType.Identifier, new TokenValue("x")),
-                    new Token(TokenType.Semicolon),
-                ]
-            },
-            {
-                "statum x = ready;", [
-                    new Token(TokenType.Statum),
-                    new Token(TokenType.Identifier, new TokenValue("x")),
-                    new Token(TokenType.Assign),
-                    new Token(TokenType.Ready),
                     new Token(TokenType.Semicolon),
                 ]
             },
@@ -94,56 +54,11 @@ public class LexerTest
                 ]
             },
             {
-                "?strike x;", [
-                    new Token(TokenType.Nullable),
-                    new Token(TokenType.Strike),
-                    new Token(TokenType.Identifier, new TokenValue("x")),
-                    new Token(TokenType.Semicolon),
-                ]
-            },
-            {
                 "strike x = \"sere\";", [
                     new Token(TokenType.Strike),
                     new Token(TokenType.Identifier, new TokenValue("x")),
                     new Token(TokenType.Assign),
                     new Token(TokenType.StringLiteral, new TokenValue("sere")),
-                    new Token(TokenType.Semicolon),
-                ]
-            },
-            {
-                "araya<dayzint> x;", [
-                    new Token(TokenType.Araya),
-                    new Token(TokenType.LessThan),
-                    new Token(TokenType.Dayzint),
-                    new Token(TokenType.GreaterThan),
-                    new Token(TokenType.Identifier, new TokenValue("x")),
-                    new Token(TokenType.Semicolon),
-                ]
-            },
-            {
-                "?araya<dayzint> x;", [
-                    new Token(TokenType.Nullable),
-                    new Token(TokenType.Araya),
-                    new Token(TokenType.LessThan),
-                    new Token(TokenType.Dayzint),
-                    new Token(TokenType.GreaterThan),
-                    new Token(TokenType.Identifier, new TokenValue("x")),
-                    new Token(TokenType.Semicolon),
-                ]
-            },
-            {
-                "araya<dayzint> x = {4, 5};", [
-                    new Token(TokenType.Araya),
-                    new Token(TokenType.LessThan),
-                    new Token(TokenType.Dayzint),
-                    new Token(TokenType.GreaterThan),
-                    new Token(TokenType.Identifier, new TokenValue("x")),
-                    new Token(TokenType.Assign),
-                    new Token(TokenType.OpenBrace),
-                    new Token(TokenType.NumericLiteral, new TokenValue(4)),
-                    new Token(TokenType.Comma),
-                    new Token(TokenType.NumericLiteral, new TokenValue(5)),
-                    new Token(TokenType.CloseBrace),
                     new Token(TokenType.Semicolon),
                 ]
             },
@@ -166,24 +81,6 @@ public class LexerTest
                 ]
             },
             {
-                "exodus(ghost);", [
-                    new Token(TokenType.Exodus),
-                    new Token(TokenType.OpenParenthesis),
-                    new Token(TokenType.Ghost),
-                    new Token(TokenType.CloseParenthesis),
-                    new Token(TokenType.Semicolon),
-                ]
-            },
-            {
-                "exodusln(x);", [
-                    new Token(TokenType.Exodusln),
-                    new Token(TokenType.OpenParenthesis),
-                    new Token(TokenType.Identifier, new TokenValue("x")),
-                    new Token(TokenType.CloseParenthesis),
-                    new Token(TokenType.Semicolon),
-                ]
-            },
-            {
                 "iffy (x == 5) {", [
                     new Token(TokenType.Iffy),
                     new Token(TokenType.OpenParenthesis),
@@ -198,18 +95,6 @@ public class LexerTest
                 "} elysian {", [
                     new Token(TokenType.CloseBrace),
                     new Token(TokenType.Elysian),
-                    new Token(TokenType.OpenBrace),
-                ]
-            },
-            {
-                "} elysiffy (x == 5) {", [
-                    new Token(TokenType.CloseBrace),
-                    new Token(TokenType.Elysiffy),
-                    new Token(TokenType.OpenParenthesis),
-                    new Token(TokenType.Identifier, new TokenValue("x")),
-                    new Token(TokenType.Equal),
-                    new Token(TokenType.NumericLiteral, new TokenValue(5)),
-                    new Token(TokenType.CloseParenthesis),
                     new Token(TokenType.OpenBrace),
                 ]
             },
@@ -270,7 +155,7 @@ public class LexerTest
                 ]
             },
             {
-                "funkotron divire(dayzint a, dayzint b): ?dayzint {", [
+                "funkotron divire(dayzint a, dayzint b): dayzint {", [
                     new Token(TokenType.Funkotron),
                     new Token(TokenType.Identifier, new TokenValue("divire")),
                     new Token(TokenType.OpenParenthesis),
@@ -281,7 +166,6 @@ public class LexerTest
                     new Token(TokenType.Identifier, new TokenValue("b")),
                     new Token(TokenType.CloseParenthesis),
                     new Token(TokenType.Colon),
-                    new Token(TokenType.Nullable),
                     new Token(TokenType.Dayzint),
                     new Token(TokenType.OpenBrace),
                 ]

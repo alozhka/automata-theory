@@ -39,9 +39,9 @@ public class SemanticsChecker
 
     public void Check(List<AstNode> nodes)
     {
-        foreach (AstNode node in nodes)
+        foreach (AbstractPass pass in _passes)
         {
-            foreach (AbstractPass pass in _passes)
+            foreach (AstNode node in nodes)
             {
                 node.Accept(pass);
             }

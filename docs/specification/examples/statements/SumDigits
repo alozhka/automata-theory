@@ -5,7 +5,7 @@ funkotron sumDigits(dayzint number): dayzint
     dayzint sum = 0;
     valorant (number != 0) {
         sum = sum + number % RADIX;
-        number = number // RADIX;
+        number = number / RADIX;
     }   
 
     returnal sum;

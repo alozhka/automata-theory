@@ -23,29 +23,9 @@ public enum TokenType
     Fallout,
 
     /// <summary>
-    ///  �������� ����� statum.
-    /// </summary>
-    Statum,
-
-    /// <summary>
-    ///  �������� ����� ready.
-    /// </summary>
-    Ready,
-
-    /// <summary>
-    ///  �������� ����� noready.
-    /// </summary>
-    Noready,
-
-    /// <summary>
     ///  �������� ����� strike.
     /// </summary>
     Strike,
-
-    /// <summary>
-    ///  �������� ����� araya.
-    /// </summary>
-    Araya,
 
     /// <summary>
     ///  �������� ����� raid.
@@ -58,16 +38,6 @@ public enum TokenType
     Exodus,
 
     /// <summary>
-    ///  �������� ����� ghost.
-    /// </summary>
-    Ghost,
-
-    /// <summary>
-    ///  �������� ����� exodusln.
-    /// </summary>
-    Exodusln,
-
-    /// <summary>
     ///  �������� ����� iffy.
     /// </summary>
     Iffy,
@@ -76,11 +46,6 @@ public enum TokenType
     ///  �������� ����� elysian.
     /// </summary>
     Elysian,
-
-    /// <summary>
-    ///  �������� ����� elysiffy.
-    /// </summary>
-    Elysiffy,
 
     /// <summary>
     ///  �������� ����� valorant.
@@ -113,11 +78,6 @@ public enum TokenType
     Returnal,
 
     /// <summary>
-    ///  �������� ����� ?.
-    /// </summary>
-    Nullable,
-
-    /// <summary>
     ///  ������������� (��� �������).
     /// </summary>
     Identifier,
@@ -131,11 +91,6 @@ public enum TokenType
     ///  ������� ������.
     /// </summary>
     StringLiteral,
-
-    /// <summary>
-    ///  ������� �������.
-    /// </summary>
-    FuncotronLiteral,
 
     /// <summary>
     ///  �������� ��������.

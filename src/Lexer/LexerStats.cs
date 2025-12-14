@@ -58,13 +58,11 @@ public static class LexerStats
     {
         return type switch
         {
-            TokenType.Dayzint or TokenType.Fallout or TokenType.Statum or
-                TokenType.Strike or TokenType.Araya or TokenType.Ghost or
-                TokenType.Ready or TokenType.Noready or TokenType.Iffy or
-                TokenType.Elysian or TokenType.Elysiffy or TokenType.Valorant or
+            TokenType.Dayzint or TokenType.Fallout or TokenType.Strike
+                or TokenType.Iffy or TokenType.Elysian or TokenType.Valorant or
                 TokenType.Forza or TokenType.Breakout or TokenType.Contra or
                 TokenType.Funkotron or TokenType.Returnal or TokenType.Raid or
-                TokenType.Exodus or TokenType.Exodusln
+                TokenType.Exodus
                 => Categories.Keywords,
 
             TokenType.Identifier => Categories.Identifier,

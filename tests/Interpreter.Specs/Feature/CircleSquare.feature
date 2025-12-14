@@ -11,7 +11,7 @@
                 fallout radius;
                 raid(radius);
 
-                exodusln(PI * radius * radius);
+                exodus(PI * radius * radius);
             }
             """
         И я установил входные данные:

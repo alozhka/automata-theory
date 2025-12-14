@@ -58,7 +58,7 @@ public class Parser
             return ParseConstantDeclaration();
         }
 
-        if (IsTypeToken(token.Type) || token.Type == TokenType.Nullable)
+        if (IsTypeToken(token.Type))
         {
             return ParseVariableDeclaration();
         }
@@ -143,11 +143,6 @@ public class Parser
     /// </summary>
     private AstNode ParseVariableDeclaration()
     {
-        if (_tokens.Peek().Type == TokenType.Nullable)
-        {
-            _tokens.Advance();
-        }
-
         string typeName = ParseTypeName();
         _currentVariableType = ConvertTypeNameToValueType(typeName);
 
@@ -184,11 +179,6 @@ public class Parser
     private AstNode ParseConstantDeclaration()
     {
         Match(TokenType.Monument);
-
-        if (_tokens.Peek().Type == TokenType.Nullable)
-        {
-            _tokens.Advance();
-        }
 
         string typeName = ParseTypeName();
         _currentVariableType = ConvertTypeNameToValueType(typeName);
@@ -265,7 +255,7 @@ public class Parser
             return ParseConstantDeclaration();
         }
 
-        if (IsTypeToken(token.Type) || token.Type == TokenType.Nullable)
+        if (IsTypeToken(token.Type))
         {
             return ParseVariableDeclaration();
         }
@@ -295,7 +285,7 @@ public class Parser
             return ParseAssignmentOrFunctionCall();
         }
 
-        if (token.Type == TokenType.Exodus || token.Type == TokenType.Exodusln)
+        if (token.Type == TokenType.Exodus)
         {
             return ParseOutputStatement();
         }
@@ -347,11 +337,6 @@ public class Parser
     {
         Match(TokenType.Forza);
         Match(TokenType.OpenParenthesis);
-
-        if (_tokens.Peek().Type == TokenType.Nullable)
-        {
-            _tokens.Advance();
-        }
 
         string typeName = ParseTypeName();
         _currentVariableType = ConvertTypeNameToValueType(typeName);
@@ -741,14 +726,6 @@ public class Parser
                 }
 
                 return new LiteralExpression(numericValue);
-
-            case TokenType.Ready:
-                _tokens.Advance();
-                return new LiteralExpression(new Value(1));
-
-            case TokenType.Noready:
-                _tokens.Advance();
-                return new LiteralExpression(new Value(0));
 
             case TokenType.Identifier:
                 return ParseFunctionCallOrIdentifier();

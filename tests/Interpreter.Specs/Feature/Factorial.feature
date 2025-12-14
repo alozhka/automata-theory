@@ -23,7 +23,7 @@
                 dayzint n;
                 raid(n);
                 
-                exodusln(factorial(n));
+                exodus(factorial(n));
             }
             """
         И я установил входные данные:

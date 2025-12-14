@@ -7,7 +7,7 @@ using Semantics;
 namespace Interpreter;
 
 /// <summary>
-/// ������������� ����� Kaleidoscope
+/// ������������� �����
 /// </summary>
 public class Interpreter
 {
@@ -21,7 +21,7 @@ public class Interpreter
     }
 
     /// <summary>
-    /// ��������� ��������� �� ����� Kaleidoscope
+    /// ��������� ��������� �� �����
     /// </summary>
     /// <param name="sourceCode">�������� ��� ���������</param>
     public void Execute(string sourceCode)

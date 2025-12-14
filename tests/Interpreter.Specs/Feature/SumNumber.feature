@@ -9,7 +9,7 @@
                 fallout b;
                 raid(a);
                 raid(b);
-                exodusln(a + b);
+                exodus(a + b);
             }
             """
         И я установил входные данные:

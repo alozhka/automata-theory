@@ -440,6 +440,20 @@ public class ParseTopLevelStatementsTest
                 """,
                 typeof(TypeErrorException)
             },
+            {
+                """
+                funkotron factorial()
+                {
+                    returnal 0;
+                }
+
+                maincraft()
+                {
+                    factorial();
+                }
+                """,
+                typeof(TypeErrorException)
+            },
         };
     }
 

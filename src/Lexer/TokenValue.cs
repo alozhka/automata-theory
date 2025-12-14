@@ -59,16 +59,6 @@ public class TokenValue
     {
         if (obj is TokenValue other)
         {
-            if (_value == null && other._value == null)
-            {
-                return true;
-            }
-
-            if (_value == null || other._value == null)
-            {
-                return false;
-            }
-
             if (_value is string str1 && other._value is string str2)
             {
                 return str1 == str2;

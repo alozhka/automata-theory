@@ -778,6 +778,7 @@ public class AstEvaluator(Context context, IEnvironment environment) : IAstVisit
     {
         context.PushScope(new Scope());
         bool isNotBreaked = true;
+
         try
         {
             while (isNotBreaked)
@@ -795,26 +796,34 @@ public class AstEvaluator(Context context, IEnvironment environment) : IAstVisit
                     break;
                 }
 
-                foreach (AstNode statement in e.ThenBranch)
+                context.PushScope(new Scope());
+                try
                 {
-                    try
+                    foreach (AstNode statement in e.ThenBranch)
                     {
-                        statement.Accept(this);
-
-                        if (_values.Count > 0 && !(statement is ReturnStatement))
+                        try
                         {
-                            _values.Pop();
+                            statement.Accept(this);
+
+                            if (_values.Count > 0 && !(statement is ReturnStatement))
+                            {
+                                _values.Pop();
+                            }
+                        }
+                        catch (ContinueException)
+                        {
+                            break;
+                        }
+                        catch (BreakException)
+                        {
+                            isNotBreaked = false;
+                            break;
                         }
                     }
-                    catch (ContinueException)
-                    {
-                        break;
-                    }
-                    catch (BreakException)
-                    {
-                        isNotBreaked = false;
-                        break;
-                    }
+                }
+                finally
+                {
+                    context.PopScope();
                 }
             }
 
