@@ -12,7 +12,7 @@ public class Token(
     public TokenValue? Value { get; } = value;
 
     /// <summary>
-    ///  ���������� ������ �� ���� � ��������.
+    /// Сравнивает токены по типу и значению.
     /// </summary>
     public override bool Equals(object? obj)
     {
@@ -25,7 +25,7 @@ public class Token(
     }
 
     /// <summary>
-    ///  ���������� ��� �� ������� ������.
+    /// Возвращает хеш от свойств токена.
     /// </summary>
     public override int GetHashCode()
     {
@@ -33,7 +33,7 @@ public class Token(
     }
 
     /// <summary>
-    /// ����������� ����� � ����� "Type (Value)".
+    /// Форматирует токен в стиле "Type (Value)".
     /// </summary>
     public override string ToString()
     {

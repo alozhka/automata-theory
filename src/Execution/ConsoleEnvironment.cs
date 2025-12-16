@@ -4,9 +4,6 @@ namespace Execution;
 
 public class ConsoleEnvironment : IEnvironment
 {
-    /// <summary>
-    /// ������ ����� �� ������� (raid)
-    /// </summary>
     public Value ReadInput()
     {
         while (true)
@@ -22,9 +19,6 @@ public class ConsoleEnvironment : IEnvironment
         }
     }
 
-    /// <summary>
-    /// ����� ���������� � ������� (exodus)
-    /// </summary>
     public void AddResult(Value result)
     {
         Console.Write(result.ToString());

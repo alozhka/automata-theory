@@ -7,7 +7,7 @@ using Semantics;
 namespace Interpreter;
 
 /// <summary>
-/// ������������� �����
+/// Интерпретатор языка MysticGameScript.
 /// </summary>
 public class Interpreter
 {
@@ -21,9 +21,9 @@ public class Interpreter
     }
 
     /// <summary>
-    /// ��������� ��������� �� �����
+    /// Выполняет программу на языке MysticGameScript.
     /// </summary>
-    /// <param name="sourceCode">�������� ��� ���������</param>
+    /// <param name="sourceCode">Исходный код программы.</param>
     public void Execute(string sourceCode)
     {
         if (string.IsNullOrEmpty(sourceCode))

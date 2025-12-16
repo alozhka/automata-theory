@@ -15,9 +15,6 @@ public static class LexerStats
         return CollectFromSource(sourceCode);
     }
 
-    /// <summary>
-    /// �������� ���������� ������ �� ��������� ����
-    /// </summary>
     private static string CollectFromSource(string sourceCode)
     {
         Dictionary<string, int> categories = new()
@@ -51,9 +48,6 @@ public static class LexerStats
         return FormatStatistics(categories);
     }
 
-    /// <summary>
-    /// ���������� ��������� ������
-    /// </summary>
     private static string GetTokenCategory(TokenType type)
     {
         return type switch
@@ -72,7 +66,7 @@ public static class LexerStats
             TokenType.StringLiteral => Categories.StringLiterals,
 
             TokenType.PlusSign or TokenType.MinusSign or TokenType.MultiplySign or
-                TokenType.DivideSign or TokenType.ModuloSign or TokenType.ExponentiationSign or
+                TokenType.DivideSign or TokenType.ModuloSign or
                 TokenType.Assign or TokenType.Equal or TokenType.LessThan or
                 TokenType.GreaterThan or TokenType.LessThanOrEqual or TokenType.GreaterThanOrEqual or
                 TokenType.LogicalAnd or TokenType.LogicalOr or TokenType.LogicalNot
@@ -82,9 +76,6 @@ public static class LexerStats
         };
     }
 
-    /// <summary>
-    /// ����������� ���������� � ������
-    /// </summary>
     private static string FormatStatistics(Dictionary<string, int> categories)
     {
         StringBuilder sb = new();

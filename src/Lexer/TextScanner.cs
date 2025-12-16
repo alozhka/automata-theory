@@ -1,7 +1,7 @@
 namespace Lexer;
 
 /// <summary>
-///  ��������� ����� SQL-�������, ������������ ��� ��������: Peek(N), Advance() � IsEnd().
+///  Сканирует текст MysticGameScript, предоставляя три операции: Peek(N), Advance() и IsEnd().
 /// </summary>
 public class TextScanner(string sql)
 {
@@ -9,7 +9,7 @@ public class TextScanner(string sql)
     private int _position;
 
     /// <summary>
-    ///  ������ �� N �������� ����� ������� ������� (�� ��������� N=0).
+    ///  Читает на N символов вперёд текущей позиции (по умолчанию N=0).
     /// </summary>
     public char Peek(int n = 0)
     {
@@ -18,7 +18,7 @@ public class TextScanner(string sql)
     }
 
     /// <summary>
-    ///  �������� ������� ������� �� ���� ������.
+    ///  Сдвигает текущую позицию на один символ.
     /// </summary>
     public void Advance()
     {

@@ -2,9 +2,6 @@ using Runtime;
 
 namespace Execution;
 
-/// <summary>
-/// ���������� ���������: �������� ��� ���������, �� �� ��������� ��������� �����/������.
-/// </summary>
 public class FakeEnvironment : IEnvironment
 {
     private readonly List<Value> _results = [];

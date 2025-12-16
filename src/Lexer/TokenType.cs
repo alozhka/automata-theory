@@ -13,207 +13,202 @@ public enum TokenType
     Monument,
 
     /// <summary>
-    ///  �������� ����� dayzint.
+    /// Ключевое слово dayzint.
     /// </summary>
     Dayzint,
 
     /// <summary>
-    ///  �������� ����� fallout.
+    /// Ключевое слово fallout.
     /// </summary>
     Fallout,
 
     /// <summary>
-    ///  �������� ����� strike.
+    /// Ключевое слово strike.
     /// </summary>
     Strike,
 
     /// <summary>
-    ///  �������� ����� raid.
+    /// Ключевое слово raid.
     /// </summary>
     Raid,
 
     /// <summary>
-    ///  �������� ����� exodus.
+    /// Ключевое слово exodus.
     /// </summary>
     Exodus,
 
     /// <summary>
-    ///  �������� ����� iffy.
+    /// Ключевое слово iffy.
     /// </summary>
     Iffy,
 
     /// <summary>
-    ///  �������� ����� elysian.
+    /// Ключевое слово elysian.
     /// </summary>
     Elysian,
 
     /// <summary>
-    ///  �������� ����� valorant.
+    /// Ключевое слово valorant.
     /// </summary>
     Valorant,
 
     /// <summary>
-    ///  �������� ����� forza.
+    /// Ключевое слово forza.
     /// </summary>
     Forza,
 
     /// <summary>
-    ///  �������� ����� breakout.
+    /// Ключевое слово breakout.
     /// </summary>
     Breakout,
 
     /// <summary>
-    ///  �������� ����� contra.
+    ///  Ключевое слово contra.
     /// </summary>
     Contra,
 
     /// <summary>
-    ///  �������� ����� funkotron.
+    /// Ключевое слово funkotron.
     /// </summary>
     Funkotron,
 
     /// <summary>
-    ///  �������� ����� returnal.
+    /// Ключевое слово returnal.
     /// </summary>
     Returnal,
 
     /// <summary>
-    ///  ������������� (��� �������).
+    /// Идентификатор (имя символа).
     /// </summary>
     Identifier,
 
     /// <summary>
-    ///  ������� �����.
+    /// Литерал числа.
     /// </summary>
     NumericLiteral,
 
     /// <summary>
-    ///  ������� ������.
+    /// Литерал строки.
     /// </summary>
     StringLiteral,
 
     /// <summary>
-    ///  �������� ��������.
+    /// Оператор сложения.
     /// </summary>
     PlusSign,
 
     /// <summary>
-    ///  �������� ������������.
+    /// Оператор присваивания.
     /// </summary>
     Assign,
 
     /// <summary>
-    ///  �������� ���������.
+    /// Оператор равенства.
     /// </summary>
     Equal,
 
     /// <summary>
-    ///  �������� �����������.
+    /// Оператор нерваенства.
     /// </summary>
     Unequal,
 
     /// <summary>
-    ///  �������� ���������.
+    /// Оператор вычитания.
     /// </summary>
     MinusSign,
 
     /// <summary>
-    ///  ���������� �.
+    /// Логическое И.
     /// </summary>
     LogicalAnd,
 
     /// <summary>
-    ///  ���������� ���.
+    /// Логическое ИЛИ.
     /// </summary>
     LogicalOr,
 
     /// <summary>
-    ///  ���������� ��.
+    /// Логическое НЕ.
     /// </summary>
     LogicalNot,
 
     /// <summary>
-    ///  �������� ���������.
+    /// Оператор умножения.
     /// </summary>
     MultiplySign,
 
     /// <summary>
-    ///  �������� �������.
+    /// Оператор деления.
     /// </summary>
     DivideSign,
 
     /// <summary>
-    ///  �������� ������� �� ������.
+    /// Оператор деления по модулю.
     /// </summary>
     ModuloSign,
 
     /// <summary>
-    ///  �������� ���������� � �������.
-    /// </summary>
-    ExponentiationSign,
-
-    /// <summary>
-    ///  �������� ��������� "������".
+    /// Оператор сравнения "меньше".
     /// </summary>
     LessThan,
 
     /// <summary>
-    ///  �������� ��������� "������ ��� �����".
+    /// Оператор сравнения "меньше или равно".
     /// </summary>
     LessThanOrEqual,
 
     /// <summary>
-    ///  �������� ��������� "������".
+    /// Оператор сравнения "больше".
     /// </summary>
     GreaterThan,
 
     /// <summary>
-    ///  �������� ��������� "������ ��� �����".
+    /// Оператор сравнения "больше или равно".
     /// </summary>
     GreaterThanOrEqual,
 
     /// <summary>
-    ///  ����������� ������� ������ '('.
+    /// Открывающая круглая скобка '('.
     /// </summary>
     OpenParenthesis,
 
     /// <summary>
-    ///  ����������� ������� ������ ')'.
+    /// Закрывающая круглая скобка ')'.
     /// </summary>
     CloseParenthesis,
 
     /// <summary>
-    ///  ����������� �������� ������ '{'.
+    /// Открывающая фигурная скобка '{'.
     /// </summary>
     OpenBrace,
 
     /// <summary>
-    ///  ����������� �������� ������ '}'.
+    /// Закрывающая фигурная скобка '}'.
     /// </summary>
     CloseBrace,
 
     /// <summary>
-    ///  ������� ','
+    /// Запятая ','
     /// </summary>
     Comma,
 
     /// <summary>
-    ///  ����������� ';'
+    /// Разделитель ';'
     /// </summary>
     Semicolon,
 
     /// <summary>
-    ///  ����������� ':'
+    /// Разделитель ':'
     /// </summary>
     Colon,
 
     /// <summary>
-    ///  ����� �����.
+    /// Конец файла.
     /// </summary>
     EndOfFile,
 
     /// <summary>
-    ///  ������������ �������.
+    /// Недопустимая лексема.
     /// </summary>
     Error,
 }
