@@ -2,7 +2,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Ast\Ast.csproj" />
-    <ProjectReference Include="..\Lexer\Lexer.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

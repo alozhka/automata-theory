@@ -1,4 +1,4 @@
-﻿namespace Lexer;
+﻿namespace Execution;
 
 public static class Numbers
 {
