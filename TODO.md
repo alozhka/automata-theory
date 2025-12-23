@@ -2,3 +2,6 @@
 - [x] [analitic] Оформить EBNF грамматику в виде блока кода
 - [x] [development] Ряд узлов AST должен стать statement, а не expression
 - [x] [development] Привести обработку кодировки строк в соответствии со спекой
+- [ ] [development] Statement не должны возвращать значение
+- [ ] [development] Парсер Forza не соответствует грамматике
+- [ ] [development] В цикле FOR не создавать на лету AST
